@@ -40,7 +40,7 @@
 		<maven-scm-plugin>1.9.4</maven-scm-plugin>
 	</properties>
 	<scm>
-		<tag>developer</tag>
+		<tag>true</tag>
 		<url>https://github.com/venanciolm/commons-j2ee-tools</url>
 		<connection>scm:git:${project.scm.url}.git</connection>
 		<developerConnection>scm:git:${project.scm.url}.git</developerConnection>
