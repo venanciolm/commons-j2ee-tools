@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.farmafene.commons</groupId>
 	<artifactId>commons-j2ee-tools</artifactId>
@@ -38,9 +39,20 @@
 		<wagon-webdav-jackrabbit>2.9</wagon-webdav-jackrabbit>
 		<jdk.version>1.7</jdk.version>
 		<maven-scm-plugin>1.9.4</maven-scm-plugin>
+		<!-- -->
+		<!-- -->
+		<!-- Project Dependencies -->
+		<slf4j-api.VERSION>1.7.7</slf4j-api.VERSION>
+		<logback-classic.VERSION>1.1.3</logback-classic.VERSION>
+		<btm.VERSION>2.1.4</btm.VERSION>
+		<geronimo-connector.VERSION>3.1.1</geronimo-connector.VERSION>
+		<geronimo-ejb_3.1_spec.VERSION>1.0.2</geronimo-ejb_3.1_spec.VERSION>
+		<org.springframework.VERSION>4.1.7.RELEASE</org.springframework.VERSION>
+		<junit.VERSION>4.12</junit.VERSION>
+		<tranql-connector.VERSION>1.8</tranql-connector.VERSION>
 	</properties>
 	<scm>
-		<tag>HEAD</tag>
+		<tag>developer</tag>
 		<url>https://github.com/venanciolm/commons-j2ee-tools</url>
 		<connection>scm:git:${project.scm.url}.git</connection>
 		<developerConnection>scm:git:${project.scm.url}.git</developerConnection>
@@ -180,4 +192,144 @@
 			</plugin>
 		</plugins>
 	</build>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j-api.VERSION}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>${slf4j-api.VERSION}</version>
+				<scope>compile</scope>
+				<optional>true</optional>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jul-to-slf4j</artifactId>
+				<version>${slf4j-api.VERSION}</version>
+				<scope>compile</scope>
+				<optional>true</optional>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.geronimo.specs</groupId>
+				<artifactId>geronimo-ejb_3.1_spec</artifactId>
+				<version>${geronimo-ejb_3.1_spec.VERSION}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.geronimo.components</groupId>
+				<artifactId>geronimo-connector</artifactId>
+				<version>${geronimo-connector.VERSION}</version>
+				<scope>compile</scope>
+				<optional>true</optional>
+			</dependency>
+			<dependency>
+				<groupId>org.codehaus.btm</groupId>
+				<artifactId>btm</artifactId>
+				<version>${btm.VERSION}</version>
+				<scope>compile</scope>
+				<optional>true</optional>
+				<exclusions>
+					<exclusion>
+						<groupId>javax.transaction</groupId>
+						<artifactId>jta</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${org.springframework.VERSION}</version>
+				<scope>compile</scope>
+				<type>jar</type>
+				<optional>true</optional>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback-classic.VERSION}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-test</artifactId>
+				<version>${org.springframework.VERSION}</version>
+				<scope>test</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.VERSION}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.tranql</groupId>
+				<artifactId>tranql-connector</artifactId>
+				<version>${tranql-connector.VERSION}</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.geronimo.specs</groupId>
+			<artifactId>geronimo-ejb_3.1_spec</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.geronimo.components</groupId>
+			<artifactId>geronimo-connector</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.btm</groupId>
+			<artifactId>btm</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.tranql</groupId>
+			<artifactId>tranql-connector</artifactId>
+		</dependency>
+	</dependencies>
 </project>
