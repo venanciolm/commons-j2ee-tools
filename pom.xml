@@ -51,7 +51,7 @@
 		<tranql-connector.VERSION>1.8</tranql-connector.VERSION>
 	</properties>
 	<scm>
-		<tag>developer</tag>
+		<tag>HEAD</tag>
 		<url>https://github.com/venanciolm/commons-j2ee-tools</url>
 		<connection>scm:git:${project.scm.url}.git</connection>
 		<developerConnection>scm:git:${project.scm.url}.git</developerConnection>
