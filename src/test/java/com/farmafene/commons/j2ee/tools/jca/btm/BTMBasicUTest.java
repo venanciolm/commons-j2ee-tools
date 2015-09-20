@@ -38,7 +38,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -52,7 +52,7 @@ public class BTMBasicUTest {
 			.getLogger(BTMBasicUTest.class);
 
 	@Autowired
-	private ApplicationContext ctx;
+	private ConfigurableApplicationContext ctx;
 
 	public BTMBasicUTest() {
 		logger.info("BTMBasicUTest<init>");
@@ -66,6 +66,7 @@ public class BTMBasicUTest {
 	@AfterClass
 	public static void afterClass() {
 		logger.info("Destroy!");
+		BTMLocator.getBitronixTransactionManager().shutdown();
 	}
 
 	@Test
@@ -84,10 +85,5 @@ public class BTMBasicUTest {
 				.getBean(TransactionSynchronizationRegistry.class));
 		logger.info("TransactionSynchronizationRegistry: {}",
 				this.ctx.getBean(TransactionSynchronizationRegistry.class));
-	}
-
-	@Test
-	public void beanFactory2Test() throws Exception {
-		logger.info("");
 	}
 }

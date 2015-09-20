@@ -58,6 +58,7 @@ public class BTMInboundUTest implements InitializingBean {
 	@AfterClass
 	public static void afterClass() {
 		logger.info("destroying!");
+		BTMLocator.getBitronixTransactionManager().shutdown();
 	}
 
 	/**
