@@ -21,13 +21,18 @@
  * OF CONTRACT, TORT OR OTHERWISE,  ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.farmafene.commons.j2ee.tools.jca.btm;
+package com.farmafene.commons.j2ee.tools.jca.common;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import javax.resource.spi.UnavailableException;
 import javax.resource.spi.endpoint.MessageEndpointFactory;
+import javax.resource.spi.work.HintsContext;
 import javax.resource.spi.work.Work;
+import javax.resource.spi.work.WorkContext;
+import javax.resource.spi.work.WorkContextProvider;
 import javax.transaction.xa.XAResource;
 
 import org.slf4j.Logger;
@@ -35,7 +40,8 @@ import org.slf4j.LoggerFactory;
 
 import com.farmafene.commons.j2ee.tools.jca.MessageEPIntf;
 
-public class InboundWork implements Work {
+@SuppressWarnings("serial")
+public class InboundWork implements Work, WorkContextProvider {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(InboundWork.class);
@@ -76,7 +82,6 @@ public class InboundWork implements Work {
 		} catch (final UnavailableException e) {
 			logger.error("Error en EndPoint", e);
 		}
-		this.latch.countDown();
 		logger.info("done! {}", this);
 	}
 
@@ -87,7 +92,9 @@ public class InboundWork implements Work {
 	 */
 	@Override
 	public void release() {
-		logger.info("Ejecutado release y liberando latch");
+		logger.info("Ejecutado release y liberando latch",
+				new RuntimeException("Test Exception"));
+		this.latch.countDown();
 	}
 
 	/**
@@ -95,5 +102,17 @@ public class InboundWork implements Work {
 	 */
 	public CountDownLatch getLatch() {
 		return this.latch;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @see javax.resource.spi.work.WorkContextProvider#getWorkContexts()
+	 */
+	@Override
+	public List<WorkContext> getWorkContexts() {
+		final List<WorkContext> ctxs = new LinkedList<WorkContext>();
+		ctxs.add(new HintsContext());
+		return ctxs;
 	}
 }

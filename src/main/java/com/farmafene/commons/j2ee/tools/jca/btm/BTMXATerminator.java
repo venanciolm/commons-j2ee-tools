@@ -29,16 +29,22 @@ import java.util.Set;
 import javax.resource.spi.XATerminator;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
+import javax.transaction.InvalidTransactionException;
+import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.Synchronization;
 import javax.transaction.SystemException;
+import javax.transaction.Transaction;
+import javax.transaction.TransactionManager;
+import javax.transaction.UserTransaction;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
 import bitronix.tm.internal.ThreadContext;
 
-public class BTMXATerminator extends BTMTransactionSynchronizationRegistry implements XATerminator {
+public class BTMXATerminator extends BTMTransactionSynchronizationRegistry
+		implements XATerminator, TransactionManager, UserTransaction {
 
 	private final Set<Xid> prepared;
 
@@ -55,8 +61,14 @@ public class BTMXATerminator extends BTMTransactionSynchronizationRegistry imple
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append(getClass().getSimpleName()).append("={");
+		sb.append(BTMLocator.getBitronixTransactionManager());
+		sb.append(", current=").append(BTMLocator.getBitronixTransactionManager().getCurrentTransaction());
 		sb.append("}");
 		return sb.toString();
+	}
+
+	public void shutdown() {
+		BTMLocator.getBitronixTransactionManager().shutdown();
 	}
 
 	/**
@@ -66,7 +78,8 @@ public class BTMXATerminator extends BTMTransactionSynchronizationRegistry imple
 	 *      boolean)
 	 */
 	@Override
-	public void commit(final Xid xid, final boolean onePhase) throws XAException {
+	public void commit(final Xid xid, final boolean onePhase)
+			throws XAException {
 		try {
 			final ThreadContext tc = bind(xid);
 			tc.getTransaction().commit();
@@ -197,6 +210,92 @@ public class BTMXATerminator extends BTMTransactionSynchronizationRegistry imple
 		} finally {
 			unbound();
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see javax.transaction.TransactionManager#begin()
+	 */
+	@Override
+	public void begin() throws NotSupportedException, SystemException {
+		BTMLocator.getBitronixTransactionManager().begin();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see javax.transaction.TransactionManager#commit()
+	 */
+	@Override
+	public void commit() throws HeuristicMixedException,
+			HeuristicRollbackException, IllegalStateException,
+			RollbackException, SecurityException, SystemException {
+		BTMLocator.getBitronixTransactionManager().commit();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see javax.transaction.TransactionManager#getStatus()
+	 */
+	@Override
+	public int getStatus() throws SystemException {
+		return BTMLocator.getBitronixTransactionManager().getStatus();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see javax.transaction.TransactionManager#getTransaction()
+	 */
+	@Override
+	public Transaction getTransaction() throws SystemException {
+		return BTMLocator.getBitronixTransactionManager().getTransaction();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see javax.transaction.TransactionManager#resume(javax.transaction.Transaction)
+	 */
+	@Override
+	public void resume(Transaction tobj) throws IllegalStateException,
+			InvalidTransactionException, SystemException {
+		BTMLocator.getBitronixTransactionManager().resume(tobj);
+
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see javax.transaction.TransactionManager#rollback()
+	 */
+	@Override
+	public void rollback() throws IllegalStateException, SecurityException,
+			SystemException {
+		BTMLocator.getBitronixTransactionManager().rollback();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see javax.transaction.TransactionManager#setTransactionTimeout(int)
+	 */
+	@Override
+	public void setTransactionTimeout(int seconds) throws SystemException {
+		BTMLocator.getBitronixTransactionManager().setTransactionTimeout(
+				seconds);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see javax.transaction.TransactionManager#suspend()
+	 */
+	@Override
+	public Transaction suspend() throws SystemException {
+		return BTMLocator.getBitronixTransactionManager().suspend();
 	}
 
 }

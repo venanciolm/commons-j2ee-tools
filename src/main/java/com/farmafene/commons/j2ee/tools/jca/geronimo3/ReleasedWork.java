@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009-2015 farmafene.com
  * All rights reserved.
- *
+ * 
  * Permission is hereby granted, free  of charge, to any person obtaining
  * a  copy  of this  software  and  associated  documentation files  (the
  * "Software"), to  deal in  the Software without  restriction, including
@@ -9,10 +9,10 @@
  * distribute,  sublicense, and/or sell  copies of  the Software,  and to
  * permit persons to whom the Software  is furnished to do so, subject to
  * the following conditions:
- *
+ * 
  * The  above  copyright  notice  and  this permission  notice  shall  be
  * included in all copies or substantial portions of the Software.
- *
+ * 
  * THE  SOFTWARE IS  PROVIDED  "AS  IS", WITHOUT  WARRANTY  OF ANY  KIND,
  * EXPRESS OR  IMPLIED, INCLUDING  BUT NOT LIMITED  TO THE  WARRANTIES OF
  * MERCHANTABILITY,    FITNESS    FOR    A   PARTICULAR    PURPOSE    AND
@@ -23,54 +23,43 @@
  */
 package com.farmafene.commons.j2ee.tools.jca.geronimo3;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executor;
+
+import javax.resource.spi.work.Work;
 import javax.resource.spi.work.WorkContext;
+import javax.resource.spi.work.WorkContextProvider;
 
-import org.apache.geronimo.connector.work.GeronimoWorkManager;
+@SuppressWarnings("serial")
+class ReleasedWork implements Work, WorkContextProvider {
 
-import com.farmafene.commons.j2ee.tools.jca.IWorkContextValidator;
+	private Work work;
+	private Executor executor;
 
-public class GeronimoIWorkContextValidator implements IWorkContextValidator {
-
-	private GeronimoWorkManager workManager;
-
-	public GeronimoIWorkContextValidator() {
-
+	public ReleasedWork(Work work, Executor releaseExecutor) {
+		this.work = work;
+		this.executor = releaseExecutor;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
-	public String toString() {
-		final StringBuilder sb = new StringBuilder();
-		sb.append(getClass().getSimpleName()).append("={");
-		sb.append("}");
-		return sb.toString();
+	public void run() {
+		work.run();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @see com.farmafene.commons.jca.IWorkContextValidator#isContextSupported(java.lang.Class)
-	 */
 	@Override
-	public boolean isContextSupported(final Class<? extends WorkContext> workContextClass) {
-		return this.workManager.isContextSupported(workContextClass);
+	public List<WorkContext> getWorkContexts() {
+		List<WorkContext> workContexts = new ArrayList<WorkContext>();
+		if (work instanceof WorkContextProvider) {
+			workContexts.addAll(((WorkContextProvider) work).getWorkContexts());
+		}
+		workContexts.add(new ReleaseContext(work, executor));
+		return workContexts;
 	}
 
-	/**
-	 * @return the workManager
-	 */
-	public GeronimoWorkManager getWorkManager() {
-		return this.workManager;
+	@Override
+	public void release() {
+		work.release();
 	}
 
-	/**
-	 * @param workManager the workManager to set
-	 */
-	public void setWorkManager(final GeronimoWorkManager workManager) {
-		this.workManager = workManager;
-	}
 }

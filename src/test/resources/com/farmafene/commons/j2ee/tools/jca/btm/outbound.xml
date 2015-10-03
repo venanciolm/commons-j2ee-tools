@@ -31,5 +31,6 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 	<import resource="../WM_Geronimo3__BTMXATerminator.xml" />
-	<import resource="../inbound.xml" />
+	<import resource="../CM_BTMXATerminator.xml" />
+	<import resource="../outbound.xml" />
 </beans>

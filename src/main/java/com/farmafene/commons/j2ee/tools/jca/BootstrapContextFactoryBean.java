@@ -38,7 +38,8 @@ public class BootstrapContextFactoryBean implements InitializingBean,
 	private XATerminator xATerminator;
 	private WorkManager workManager;
 	private TransactionSynchronizationRegistry transactionSynchronizationRegistry;
-	private IWorkContextValidator iWorkContextValidator;
+
+	// private IWorkContextValidator iWorkContextValidator;
 
 	public BootstrapContextFactoryBean() {
 
@@ -68,7 +69,7 @@ public class BootstrapContextFactoryBean implements InitializingBean,
 		ctx.setWorkManager(workManager);
 		ctx.setxATerminator(xATerminator);
 		ctx.setTransactionSynchronizationRegistry(transactionSynchronizationRegistry);
-		ctx.setIWorkContextValidator(iWorkContextValidator);
+		// ctx.setIWorkContextValidator(iWorkContextValidator);
 		return ctx;
 	}
 
@@ -103,8 +104,8 @@ public class BootstrapContextFactoryBean implements InitializingBean,
 		Assert.notNull(xATerminator, "Debe Establecerse el transactionManager");
 		Assert.notNull(transactionSynchronizationRegistry,
 				"Debe establecerse el TransactionSynchronizationRegistry");
-		Assert.notNull(iWorkContextValidator,
-				"Debe establecerse el IWorkContextValidator");
+		// Assert.notNull(iWorkContextValidator,
+		// "Debe establecerse el IWorkContextValidator");
 	}
 
 	/**
@@ -151,21 +152,5 @@ public class BootstrapContextFactoryBean implements InitializingBean,
 	public void setTransactionSynchronizationRegistry(
 			TransactionSynchronizationRegistry transactionSynchronizationRegistry) {
 		this.transactionSynchronizationRegistry = transactionSynchronizationRegistry;
-	}
-
-	/**
-	 * @return the iWorkContextValidator
-	 */
-	public IWorkContextValidator getIWorkContextValidator() {
-		return iWorkContextValidator;
-	}
-
-	/**
-	 * @param iWorkContextValidator
-	 *            the iWorkContextValidator to set
-	 */
-	public void setIWorkContextValidator(
-			IWorkContextValidator iWorkContextValidator) {
-		this.iWorkContextValidator = iWorkContextValidator;
 	}
 }

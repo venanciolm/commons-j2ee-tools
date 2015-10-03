@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.farmafene.commons</groupId>
 	<artifactId>commons-j2ee-tools</artifactId>
@@ -44,14 +45,15 @@
 		<slf4j-api.VERSION>1.7.7</slf4j-api.VERSION>
 		<logback-classic.VERSION>1.1.3</logback-classic.VERSION>
 		<btm.VERSION>2.1.4</btm.VERSION>
-		<geronimo-connector.VERSION>3.1.1</geronimo-connector.VERSION>
+		<geronimo-connector.VERSION>3.1.3</geronimo-connector.VERSION>
 		<geronimo-ejb_3.1_spec.VERSION>1.0.2</geronimo-ejb_3.1_spec.VERSION>
 		<org.springframework.VERSION>4.1.7.RELEASE</org.springframework.VERSION>
 		<junit.VERSION>4.12</junit.VERSION>
 		<tranql-connector.VERSION>1.8</tranql-connector.VERSION>
+		<hsqldb.VERSION>1.8.0.10</hsqldb.VERSION>
 	</properties>
 	<scm>
-		<tag>HEAD</tag>
+		<tag>developer</tag>
 		<url>https://github.com/venanciolm/commons-j2ee-tools</url>
 		<connection>scm:git:${project.scm.url}.git</connection>
 		<developerConnection>scm:git:${project.scm.url}.git</developerConnection>
@@ -283,6 +285,12 @@
 				<version>${tranql-connector.VERSION}</version>
 				<scope>test</scope>
 			</dependency>
+			<dependency>
+				<groupId>hsqldb</groupId>
+				<artifactId>hsqldb</artifactId>
+				<version>${hsqldb.VERSION}</version>
+				<scope>test</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
@@ -329,6 +337,10 @@
 		<dependency>
 			<groupId>org.tranql</groupId>
 			<artifactId>tranql-connector</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
 		</dependency>
 	</dependencies>
 </project>

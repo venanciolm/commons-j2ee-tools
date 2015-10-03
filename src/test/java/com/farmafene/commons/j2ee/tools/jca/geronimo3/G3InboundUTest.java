@@ -40,7 +40,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.farmafene.commons.j2ee.tools.jca.btm.InboundBean;
+import com.farmafene.commons.j2ee.tools.jca.common.InboundBean;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:com/farmafene/commons/j2ee/tools/jca/geronimo3/inbound.xml" })

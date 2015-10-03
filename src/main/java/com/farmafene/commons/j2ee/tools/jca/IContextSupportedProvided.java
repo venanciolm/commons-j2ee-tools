@@ -23,61 +23,8 @@
  */
 package com.farmafene.commons.j2ee.tools.jca;
 
-import java.util.List;
-
 import javax.resource.spi.work.WorkContext;
 
-public class ListWorkContextValidator implements IWorkContextValidator {
-
-	private List<Class<? extends WorkContext>> contexts;
-
-	public ListWorkContextValidator() {
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(getClass().getSimpleName()).append("={");
-		sb.append("}");
-		return sb.toString();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @see com.farmafene.commons.jca.IWorkContextValidator#isContextSupported(java.lang.Class)
-	 */
-	@Override
-	public boolean isContextSupported(
-			Class<? extends WorkContext> workContextClass) {
-		boolean isContextSupported = false;
-		for (Class<? extends WorkContext> clazz : contexts) {
-			if (clazz.isAssignableFrom(workContextClass)) {
-				isContextSupported = true;
-				break;
-			}
-		}
-		return isContextSupported;
-	}
-
-	/**
-	 * @return the contexts
-	 */
-	public List<Class<? extends WorkContext>> getContexts() {
-		return contexts;
-	}
-
-	/**
-	 * @param contexts
-	 *            the contexts to set
-	 */
-	public void setContexts(List<Class<? extends WorkContext>> contexts) {
-		this.contexts = contexts;
-	}
-
+public interface IContextSupportedProvided {
+	 boolean isContextSupported(Class<? extends WorkContext> workContextClass);
 }

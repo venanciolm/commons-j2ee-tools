@@ -21,7 +21,7 @@
  * OF CONTRACT, TORT OR OTHERWISE,  ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.farmafene.commons.j2ee.tools.jca.btm;
+package com.farmafene.commons.j2ee.tools.jca.common;
 
 import javax.resource.spi.endpoint.MessageEndpointFactory;
 import javax.resource.spi.work.Work;
@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
+@SuppressWarnings("serial")
 public class InboundWorkIntanciate extends InboundWork implements Work {
 
 	private static final Logger logger = LoggerFactory

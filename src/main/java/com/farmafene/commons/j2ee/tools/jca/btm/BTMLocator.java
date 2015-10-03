@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import bitronix.tm.BitronixTransactionManager;
 import bitronix.tm.BitronixTransactionSynchronizationRegistry;
+import bitronix.tm.Configuration;
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.internal.ThreadContext;
 
@@ -42,35 +43,40 @@ import bitronix.tm.internal.ThreadContext;
  */
 abstract class BTMLocator {
 
-	private static final Logger logger = LoggerFactory.getLogger(BTMLocator.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(BTMLocator.class);
 
 	private BTMLocator() {
 
 	}
 
-	/*
-	 *
-	 */
+	public static Configuration getBitronixConfiguration() {
+		return TransactionManagerServices.getConfiguration();
+	}
+
 	public static BitronixTransactionManager getBitronixTransactionManager() {
 		return TransactionManagerServices.getTransactionManager();
 	}
 
 	public static BitronixTransactionSynchronizationRegistry getTransactionSynchronizationRegistry() {
-		return TransactionManagerServices.getTransactionSynchronizationRegistry();
+		return TransactionManagerServices
+				.getTransactionSynchronizationRegistry();
 	}
 
 	public static Map<Thread, ThreadContext> getContexts() {
 		final BitronixTransactionManager tm = getBitronixTransactionManager();
 		Map<Thread, ThreadContext> context = null;
 		try {
-			final Field f = BitronixTransactionManager.class.getDeclaredField("contexts");
+			final Field f = BitronixTransactionManager.class
+					.getDeclaredField("contexts");
 			final boolean accesible = f.isAccessible();
 			if (!accesible) {
 				f.setAccessible(true);
 			}
 			try {
 				@SuppressWarnings("unchecked")
-				final Map<Thread, ThreadContext> ctx = (Map<Thread, ThreadContext>) f.get(tm);
+				final Map<Thread, ThreadContext> ctx = (Map<Thread, ThreadContext>) f
+						.get(tm);
 				context = ctx;
 			} catch (final IllegalArgumentException e) {
 				logger.error("No se ha conseguido el contexto", e);

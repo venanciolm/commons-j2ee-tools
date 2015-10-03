@@ -29,6 +29,7 @@ import javax.resource.spi.work.WorkException;
 import javax.transaction.xa.XAException;
 
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +41,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.farmafene.commons.j2ee.tools.jca.common.InboundBean;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:com/farmafene/commons/j2ee/tools/jca/btm/inbound.xml" })
 public class BTMInboundUTest implements InitializingBean {
@@ -49,6 +52,7 @@ public class BTMInboundUTest implements InitializingBean {
 
 	@Autowired
 	private ConfigurableApplicationContext ctx;
+	private static ConfigurableApplicationContext CTX;
 
 	@BeforeClass
 	public static void beforeClass() throws SQLException {
@@ -58,7 +62,7 @@ public class BTMInboundUTest implements InitializingBean {
 	@AfterClass
 	public static void afterClass() {
 		logger.info("destroying!");
-		BTMLocator.getBitronixTransactionManager().shutdown();
+		CTX.close();
 	}
 
 	/**
@@ -71,6 +75,8 @@ public class BTMInboundUTest implements InitializingBean {
 		logger.info("================================================");
 		logger.info("= Begin of Test");
 		logger.info("================================================");
+		Assert.assertNotNull(this.ctx);
+		CTX = this.ctx;
 	}
 
 	@Test

@@ -33,47 +33,5 @@
 
 
 	<import resource="../WM_Geronimo3__Genonimo3.xml" />
-
-	<bean id="Container"
-		class="com.farmafene.commons.j2ee.tools.jca.DefaultResourceAdapterContainer">
-		<property name="resourceAdapter" ref="ra" />
-		<property name="bootstrapContext">
-			<bean
-				class="com.farmafene.commons.j2ee.tools.jca.BootstrapContextFactoryBean">
-				<property name="workManager" ref="workManager" />
-				<property name="XATerminator" ref="transactionManager" />
-				<property name="transactionSynchronizationRegistry" ref="transactionManager" />
-				<property name="IWorkContextValidator">
-					<bean
-						class="com.farmafene.commons.j2ee.tools.jca.ListWorkContextValidator">
-						<property name="contexts">
-							<list>
-								<value>javax.resource.spi.work.HintsContext</value>
-								<value>javax.resource.spi.work.TransactionContext</value>
-								<value>javax.resource.spi.work.SecurityContext</value>
-							</list>
-						</property>
-					</bean>
-				</property>
-			</bean>
-		</property>
-	</bean>
-	<bean id="myActivationSpec"
-		class="com.farmafene.commons.j2ee.tools.jca.DefaultActivationSpecContainer">
-		<property name="resourceAdapter" ref="ra" />
-		<property name="activationSpec" ref="as" />
-		<property name="MessageEndpointFactory" ref="MessageEndPointFactory" />
-	</bean>
-	<bean id="MessageEndPointFactory"
-		class="com.farmafene.commons.j2ee.tools.jca.DefaultMessageEndPointFactory">
-		<property name="resourceAdapter" ref="ra" />
-		<property name="messageDrivenBeanInterface"
-			value="com.farmafene.commons.j2ee.tools.jca.MessageEPIntf" />
-		<property name="messageDrivenBeanClass"
-			value="com.farmafene.commons.j2ee.tools.jca.MessageEPImpl" />
-		<property name="transactionManager" ref="transactionManager" />
-	</bean>
-	<bean id="ra" class="com.farmafene.commons.j2ee.tools.jca.ResourceAdapterLog" />
-	<bean id="as"
-		class="com.farmafene.commons.j2ee.tools.jca.btm.InboundAtivationSpec" />
+	<import resource="../inbound.xml" />
 </beans>

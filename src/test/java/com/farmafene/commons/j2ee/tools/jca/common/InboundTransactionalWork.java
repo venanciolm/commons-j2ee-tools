@@ -21,7 +21,7 @@
  * OF CONTRACT, TORT OR OTHERWISE,  ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.farmafene.commons.j2ee.tools.jca.btm;
+package com.farmafene.commons.j2ee.tools.jca.common;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -32,13 +32,15 @@ import javax.resource.spi.work.WorkContext;
 import javax.resource.spi.work.WorkManager;
 import javax.transaction.TransactionSynchronizationRegistry;
 
+import org.apache.geronimo.connector.work.GeronimoWorkManager;
+
 public class BootstrapContextImpl implements BootstrapContext {
 
 	private WorkManager workManager;
 	private XATerminator xATerminator;
 	private TransactionSynchronizationRegistry transactionSynchronizationRegistry;
-	private IWorkContextValidator iWorkContextValidator;
 	private ITimerFactory iTimerFactory;
+	private IContextSupportedProvided iContextSupportedProvided;
 
 	public BootstrapContextImpl() {
 
@@ -93,17 +95,6 @@ public class BootstrapContextImpl implements BootstrapContext {
 	/**
 	 * (non-Javadoc)
 	 * 
-	 * @see javax.resource.spi.BootstrapContext#isContextSupported(java.lang.Class)
-	 */
-	@Override
-	public boolean isContextSupported(
-			Class<? extends WorkContext> workContextClass) {
-		return iWorkContextValidator.isContextSupported(workContextClass);
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
 	 * @see javax.resource.spi.BootstrapContext#getTransactionSynchronizationRegistry()
 	 */
 	@Override
@@ -124,22 +115,6 @@ public class BootstrapContextImpl implements BootstrapContext {
 	 */
 	public void setxATerminator(XATerminator xATerminator) {
 		this.xATerminator = xATerminator;
-	}
-
-	/**
-	 * @return the iWorkContextValidator
-	 */
-	public IWorkContextValidator getIWorkContextValidator() {
-		return iWorkContextValidator;
-	}
-
-	/**
-	 * @param iWorkContextValidator
-	 *            the iWorkContextValidator to set
-	 */
-	public void setIWorkContextValidator(
-			IWorkContextValidator iWorkContextValidator) {
-		this.iWorkContextValidator = iWorkContextValidator;
 	}
 
 	/**
@@ -165,5 +140,52 @@ public class BootstrapContextImpl implements BootstrapContext {
 
 	public void setITimerFactory(ITimerFactory iTimerFactory) {
 		this.iTimerFactory = iTimerFactory;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see javax.resource.spi.BootstrapContext#isContextSupported(java.lang.Class)
+	 */
+	@Override
+	public boolean isContextSupported(
+			Class<? extends WorkContext> workContextClass) {
+		boolean isContextSupported = false;
+		if (workManager instanceof IContextSupportedProvided) {
+			isContextSupported = ((IContextSupportedProvided) workManager)
+					.isContextSupported(workContextClass);
+		} else {
+			boolean isGeronimo = false;
+
+			try {
+				isGeronimo = workManager instanceof GeronimoWorkManager;
+			} catch (Exception e) {
+			}
+			if (isGeronimo) {
+				isContextSupported = ((GeronimoWorkManager) workManager)
+						.isContextSupported(workContextClass);
+
+			} else if (null != iContextSupportedProvided) {
+				isContextSupported = iContextSupportedProvided
+						.isContextSupported(workContextClass);
+			}
+		}
+		return isContextSupported;
+	}
+
+	/**
+	 * @return the contextSupportedProvided
+	 */
+	public IContextSupportedProvided getIContextSupportedProvided() {
+		return iContextSupportedProvided;
+	}
+
+	/**
+	 * @param contextSupportedProvided
+	 *            the contextSupportedProvided to set
+	 */
+	public void setIContextSupportedProvided(
+			IContextSupportedProvided contextSupportedProvided) {
+		this.iContextSupportedProvided = contextSupportedProvided;
 	}
 }

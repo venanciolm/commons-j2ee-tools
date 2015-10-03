@@ -38,7 +38,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -50,7 +50,7 @@ public class G3BasicUTest {
 			.getLogger(G3BasicUTest.class);
 
 	@Autowired
-	private ApplicationContext ctx;
+	private ConfigurableApplicationContext ctx;
 
 	public G3BasicUTest() {
 		logger.info("G3BasicUTest<init>");

@@ -29,7 +29,11 @@
 	<logger name="com.farmafene.commons" level="DEBUG" additivity="false">
 		<appender-ref ref="STDOUT" />
 	</logger>
-	<root level="INFO" additivity="false">
+	<logger name="org.apache.geronimo.transaction.manager" level="DEBUG"
+		additivity="false">
+		<appender-ref ref="STDOUT" />
+	</logger>
+	<root level="WARN" additivity="false">
 		<appender-ref ref="STDOUT" />
 	</root>
 </configuration>

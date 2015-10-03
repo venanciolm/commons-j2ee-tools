@@ -30,6 +30,19 @@
         http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-2.5.xsd">
-	<import resource="../WM_Geronimo3__BTMXATerminator.xml" />
-	<import resource="../inbound.xml" />
+
+	<bean id="Datasource1"
+		class="com.farmafene.commons.j2ee.tools.jca.btm.BTMConectionFactoryFactoryBean">
+		<property name="name" value="datasource1" />
+		<property name="minPoolSize" value="2" />
+		<property name="maxPoolSize" value="2" />
+		<property name="managedConnectionFactory" ref="managedConnectionFactory1" />
+	</bean>
+	<bean id="Datasource2"
+		class="com.farmafene.commons.j2ee.tools.jca.btm.BTMConectionFactoryFactoryBean">
+		<property name="name" value="datasource2" />
+		<property name="minPoolSize" value="2" />
+		<property name="maxPoolSize" value="2" />
+		<property name="managedConnectionFactory" ref="managedConnectionFactory2" />
+	</bean>
 </beans>

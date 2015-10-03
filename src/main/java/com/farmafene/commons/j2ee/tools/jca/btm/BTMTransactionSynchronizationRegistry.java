@@ -26,23 +26,11 @@ package com.farmafene.commons.j2ee.tools.jca.btm;
 import javax.transaction.Synchronization;
 import javax.transaction.TransactionSynchronizationRegistry;
 
-abstract class BTMTransactionSynchronizationRegistry extends BTMXAWorkAdapter implements TransactionSynchronizationRegistry {
+abstract class BTMTransactionSynchronizationRegistry extends BTMXAWorkAdapter
+		implements TransactionSynchronizationRegistry {
 
 	public BTMTransactionSynchronizationRegistry() {
 
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		final StringBuilder sb = new StringBuilder();
-		sb.append(getClass().getSimpleName()).append("={");
-		sb.append("}");
-		return sb.toString();
 	}
 
 	/**
@@ -52,7 +40,8 @@ abstract class BTMTransactionSynchronizationRegistry extends BTMXAWorkAdapter im
 	 */
 	@Override
 	public Object getResource(final Object key) {
-		return BTMLocator.getTransactionSynchronizationRegistry().getResource(key);
+		return BTMLocator.getTransactionSynchronizationRegistry().getResource(
+				key);
 	}
 
 	/**
@@ -62,7 +51,8 @@ abstract class BTMTransactionSynchronizationRegistry extends BTMXAWorkAdapter im
 	 */
 	@Override
 	public boolean getRollbackOnly() {
-		return BTMLocator.getTransactionSynchronizationRegistry().getRollbackOnly();
+		return BTMLocator.getTransactionSynchronizationRegistry()
+				.getRollbackOnly();
 	}
 
 	/**
@@ -72,7 +62,8 @@ abstract class BTMTransactionSynchronizationRegistry extends BTMXAWorkAdapter im
 	 */
 	@Override
 	public Object getTransactionKey() {
-		return BTMLocator.getTransactionSynchronizationRegistry().getTransactionKey();
+		return BTMLocator.getTransactionSynchronizationRegistry()
+				.getTransactionKey();
 	}
 
 	/**
@@ -82,7 +73,8 @@ abstract class BTMTransactionSynchronizationRegistry extends BTMXAWorkAdapter im
 	 */
 	@Override
 	public int getTransactionStatus() {
-		return BTMLocator.getTransactionSynchronizationRegistry().getTransactionStatus();
+		return BTMLocator.getTransactionSynchronizationRegistry()
+				.getTransactionStatus();
 	}
 
 	/**
@@ -93,7 +85,8 @@ abstract class BTMTransactionSynchronizationRegistry extends BTMXAWorkAdapter im
 	 */
 	@Override
 	public void putResource(final Object key, final Object value) {
-		BTMLocator.getTransactionSynchronizationRegistry().putResource(key, value);
+		BTMLocator.getTransactionSynchronizationRegistry().putResource(key,
+				value);
 
 	}
 
@@ -104,7 +97,8 @@ abstract class BTMTransactionSynchronizationRegistry extends BTMXAWorkAdapter im
 	 */
 	@Override
 	public void registerInterposedSynchronization(final Synchronization sync) {
-		BTMLocator.getTransactionSynchronizationRegistry().registerInterposedSynchronization(sync);
+		BTMLocator.getTransactionSynchronizationRegistry()
+				.registerInterposedSynchronization(sync);
 	}
 
 	/**

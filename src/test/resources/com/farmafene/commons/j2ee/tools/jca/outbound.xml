@@ -30,6 +30,29 @@
         http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-2.5.xsd">
-	<import resource="../WM_Geronimo3__BTMXATerminator.xml" />
-	<import resource="../inbound.xml" />
+
+	<bean id="managedConnectionFactory1" class="org.tranql.connector.jdbc.XADataSourceWrapper">
+		<constructor-arg>
+			<bean class="bitronix.tm.resource.jdbc.lrc.LrcXADataSource">
+				<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+				<property name="url" value="jdbc:hsqldb:mem:m01" />
+				<property name="user" value="sa" />
+				<property name="password" value="" />
+			</bean>
+		</constructor-arg>
+		<property name="userName" value="sa" />
+		<property name="password" value="" />
+	</bean>
+	<bean id="managedConnectionFactory2" class="org.tranql.connector.jdbc.XADataSourceWrapper">
+		<constructor-arg>
+			<bean class="bitronix.tm.resource.jdbc.lrc.LrcXADataSource">
+				<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+				<property name="url" value="jdbc:hsqldb:mem:m02" />
+				<property name="user" value="sa" />
+				<property name="password" value="" />
+			</bean>
+		</constructor-arg>
+		<property name="userName" value="sa" />
+		<property name="password" value="" />
+	</bean>
 </beans>

@@ -21,12 +21,36 @@
  * OF CONTRACT, TORT OR OTHERWISE,  ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.farmafene.commons.j2ee.tools.jca;
+package com.farmafene.commons.j2ee.tools.jca.common;
 
-import javax.resource.spi.work.WorkContext;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
-public interface IWorkContextValidator {
+public class StringPrintStream extends LoggerPrintStreamInternal {
 
-	boolean isContextSupported(Class<? extends WorkContext> workContextClass);
+	public StringPrintStream() {
+		super(new ByteArrayOutputStream(), true);
+	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return super.outputstream.toString();
+	}
+
+}
+
+class LoggerPrintStreamInternal extends PrintStream {
+
+	OutputStream outputstream;
+
+	public LoggerPrintStreamInternal(OutputStream out, boolean autoFlush) {
+		super(out, autoFlush);
+		this.outputstream = out;
+	}
 }

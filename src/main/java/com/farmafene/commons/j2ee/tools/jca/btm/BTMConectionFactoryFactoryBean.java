@@ -71,7 +71,7 @@ public class BTMConectionFactoryFactoryBean implements FactoryBean<Object>, Init
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		this.connectionManager = new BTMConnectionManager();
-		this.connectionManager.setClassName(this.managedConnectionFactory.getClass().getCanonicalName());
+		this.connectionManager.setClassName(String.class.getCanonicalName());
 		this.connectionManager.setMinPoolSize(this.minPoolSize);
 		this.connectionManager.setMaxPoolSize(this.maxPoolSize);
 		this.connectionManager.setManagedConnectionFactory(this.managedConnectionFactory);

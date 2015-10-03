@@ -37,6 +37,9 @@
 
 	<bean id="workManager"
 		class="com.farmafene.commons.j2ee.tools.jca.geronimo3.GeronimoWorkManagerFactory">
+		<property name="poolSize" value="1" />
+		<property name="releasePoolSize" value="1" />
+		<property name="maxWorks" value="1" />
 		<property name="xaWork" ref="transactionManager" />
 	</bean>
 </beans>
