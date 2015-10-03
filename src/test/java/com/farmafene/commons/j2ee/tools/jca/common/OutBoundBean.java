@@ -65,6 +65,7 @@ public class OutBoundBean {
 		Statement s = null;
 		con = ds.getConnection();
 		s = con.createStatement();
+		s.execute("DROP SCHEMA PUBLIC CASCADE");
 		s.execute("CREATE TABLE ITEM (UNO INT, DOS INT)");
 		s.close();
 		con.close();
@@ -73,6 +74,7 @@ public class OutBoundBean {
 		ds = (DataSource) this.ctx.getBean("Datasource2");
 		con = ds.getConnection();
 		s = con.createStatement();
+		s.execute("DROP SCHEMA PUBLIC CASCADE");
 		s.execute("CREATE TABLE ITEM (UNO INT, DOS INT)");
 		s.close();
 		con.close();

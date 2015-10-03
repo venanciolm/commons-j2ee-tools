@@ -91,8 +91,10 @@ public class GeronimoWorkManagerFactory implements InitializingBean, DisposableB
 	public void destroy() throws Exception {
 		this.workManager.doStop();
 		this.threadPool.shutdown();
+		this.threadPool.awaitTermination(60, TimeUnit.SECONDS);
 		if (null != this.releaseThreadPool) {
 			this.releaseThreadPool.shutdown();
+			this.releaseThreadPool.awaitTermination(60, TimeUnit.SECONDS);
 		}
 		if (logger.isDebugEnabled()) {
 			logger.debug("destroy()");
