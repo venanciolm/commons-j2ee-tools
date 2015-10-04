@@ -52,7 +52,7 @@
 		<hsqldb.VERSION>1.8.0.10</hsqldb.VERSION>
 	</properties>
 	<scm>
-		<tag>HEAD</tag>
+		<tag>development</tag>
 		<url>https://github.com/venanciolm/commons-j2ee-tools</url>
 		<connection>scm:git:${project.scm.url}.git</connection>
 		<developerConnection>scm:git:${project.scm.url}.git</developerConnection>
