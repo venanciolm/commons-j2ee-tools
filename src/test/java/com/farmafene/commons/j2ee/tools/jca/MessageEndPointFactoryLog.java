@@ -64,7 +64,6 @@ public class MessageEndPointFactoryLog implements MessageEndpointFactory {
 
 	@Override
 	public boolean isDeliveryTransacted(final Method method) throws NoSuchMethodException {
-		logger.info("isDeliveryTransacted((" + method + ")");
 		return false;
 	}
 

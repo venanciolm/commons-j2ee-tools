@@ -59,7 +59,7 @@ public class OutBoundBean {
 	public void afterPropertiesSet() throws Exception {
 		logger.info("Estamos entrando en afterPropertiesSet()");
 		logger.info("Creando la primera tabla");
-		DataSource ds = (DataSource) this.ctx.getBean("Datasource1");
+		DataSource ds = this.ctx.getBean("Datasource1", DataSource.class);
 		Assert.assertNotNull(ds);
 		Connection con = null;
 		Statement s = null;
@@ -71,7 +71,7 @@ public class OutBoundBean {
 		con.close();
 		logger.info("Creando la segunda tabla");
 		Assert.assertNotNull(ds);
-		ds = (DataSource) this.ctx.getBean("Datasource2");
+		ds = this.ctx.getBean("Datasource2", DataSource.class);
 		con = ds.getConnection();
 		s = con.createStatement();
 		s.execute("DROP SCHEMA PUBLIC CASCADE");
@@ -82,10 +82,10 @@ public class OutBoundBean {
 
 	public void InitTest() {
 		Assert.assertNotNull(this.ctx.getBean(TransactionManager.class));
-		Assert.assertNotNull(this.ctx.getBean("Datasource1"));
-		logger.info("{}", this.ctx.getBean("Datasource1"));
-		Assert.assertNotNull(this.ctx.getBean("Datasource2"));
-		logger.info("{}", this.ctx.getBean("Datasource2"));
+		Assert.assertNotNull(this.ctx.getBean("Datasource1", DataSource.class));
+		logger.info("{}", this.ctx.getBean("Datasource1", DataSource.class));
+		Assert.assertNotNull(this.ctx.getBean("Datasource2", DataSource.class));
+		logger.info("{}", this.ctx.getBean("Datasource2", DataSource.class));
 	}
 
 	public void Init3Test() throws WorkException, InterruptedException {

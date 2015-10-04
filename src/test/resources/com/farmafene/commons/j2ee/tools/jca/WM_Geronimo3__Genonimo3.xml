@@ -42,4 +42,13 @@
 		<property name="maxWorks" value="1" />
 		<property name="xaWork" ref="transactionManager" />
 	</bean>
+
+
+	<!-- No necesario, puesto que es el de por defecto. -->
+	<!-- Puesto que estamos probando los dos con el mismo test -->
+	<!-- es nececesario especificar el IEnlistXAResource -->
+	<bean id="IEnlistXAResource"
+		class="com.farmafene.commons.j2ee.tools.jca.DefaultEnlistXAResource">
+		<property name="transactionManager" ref="transactionManager" />
+	</bean>
 </beans>

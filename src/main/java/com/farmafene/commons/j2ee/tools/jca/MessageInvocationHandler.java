@@ -133,7 +133,9 @@ public class MessageInvocationHandler implements InvocationHandler,
 		} else if (RELEASE.equals(method)) {
 			release();
 		} else {
-			logger.info(method.toString());
+			if (logger.isDebugEnabled()) {
+				logger.debug("invoke({})", method);
+			}
 			try {
 				invoke = method.invoke(inner, args);
 			} catch (InvocationTargetException e) {

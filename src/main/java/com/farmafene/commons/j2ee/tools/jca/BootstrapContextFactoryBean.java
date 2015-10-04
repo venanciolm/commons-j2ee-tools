@@ -39,8 +39,6 @@ public class BootstrapContextFactoryBean implements InitializingBean,
 	private WorkManager workManager;
 	private TransactionSynchronizationRegistry transactionSynchronizationRegistry;
 
-	// private IWorkContextValidator iWorkContextValidator;
-
 	public BootstrapContextFactoryBean() {
 
 	}
@@ -104,8 +102,6 @@ public class BootstrapContextFactoryBean implements InitializingBean,
 		Assert.notNull(xATerminator, "Debe Establecerse el transactionManager");
 		Assert.notNull(transactionSynchronizationRegistry,
 				"Debe establecerse el TransactionSynchronizationRegistry");
-		// Assert.notNull(iWorkContextValidator,
-		// "Debe establecerse el IWorkContextValidator");
 	}
 
 	/**

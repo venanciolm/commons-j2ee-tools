@@ -41,7 +41,8 @@ import com.farmafene.commons.j2ee.tools.jca.XAResourceLog;
 
 public class InboundBean {
 
-	private static final Logger logger = LoggerFactory.getLogger(InboundBean.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(InboundBean.class);
 
 	private ConfigurableApplicationContext ctx;
 
@@ -50,68 +51,119 @@ public class InboundBean {
 	}
 
 	public void aa_cretateFactory() {
-		logger.info("================================================");
-		logger.info("= Comenzamos a validar la BeanFactory");
-		logger.info("================================================");
+		if (logger.isDebugEnabled()) {
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("================================================");
+			ps.println("= Comenzamos a validar la BeanFactory          =");
+			ps.print("================================================");
+			logger.info("{}", ps);
+		}
 		Assert.assertNotNull(this.ctx);
-		logger.info("WorkManager:                        {}", this.ctx.getBean(WorkManager.class));
-		logger.info("TransactionManager:                 {}", this.ctx.getBean(TransactionManager.class));
-		logger.info("TransactionSynchronizationRegistry: {}", this.ctx.getBean(TransactionSynchronizationRegistry.class));
-		logger.info("XATerminator:                       {}", this.ctx.getBean(XATerminator.class));
+		logger.info("WorkManager:                        {}",
+				this.ctx.getBean(WorkManager.class));
+		logger.info("TransactionManager:                 {}",
+				this.ctx.getBean(TransactionManager.class));
+		logger.info("TransactionSynchronizationRegistry: {}",
+				this.ctx.getBean(TransactionSynchronizationRegistry.class));
+		logger.info("XATerminator:                       {}",
+				this.ctx.getBean(XATerminator.class));
 		Assert.assertNotNull(this.ctx.getBean(WorkManager.class));
 		Assert.assertNotNull(this.ctx.getBean(TransactionManager.class));
-		Assert.assertNotNull(this.ctx.getBean(TransactionSynchronizationRegistry.class));
+		Assert.assertNotNull(this.ctx
+				.getBean(TransactionSynchronizationRegistry.class));
 		Assert.assertNotNull(this.ctx.getBean(XATerminator.class));
 	}
 
-	public void cretateFactory() throws WorkException, InterruptedException, XAException {
-		logger.info("================================================");
-		logger.info("= Comenzamos a validar la BeanFactory");
-		logger.info("================================================");
+	public void cretateFactory() throws WorkException, InterruptedException,
+			XAException {
+		if (logger.isDebugEnabled()) {
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("================================================");
+			ps.println("= Comenzamos a validar la BeanFactory          =");
+			ps.print("================================================");
+			logger.info("{}", ps);
+		}
 		Assert.assertNotNull(this.ctx);
 		final WorkManager wm = this.ctx.getBean(WorkManager.class);
 		Assert.assertNotNull(wm);
-		logger.info("================================================");
-		logger.info("= Existe el AtivationSpec");
-		logger.info("================================================");
-		final InboundAtivationSpec ac = this.ctx.getBean(InboundAtivationSpec.class);
+		if (logger.isDebugEnabled()) {
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("================================================");
+			ps.println("= Existe el AtivationSpec                      =");
+			ps.print("================================================");
+			logger.info("{}", ps);
+		}
+		final InboundAtivationSpec ac = this.ctx
+				.getBean(InboundAtivationSpec.class);
 		Assert.assertNotNull(ac);
-		logger.info("================================================");
-		logger.info("= Existe el XATerminator");
-		logger.info("================================================");
+		if (logger.isDebugEnabled()) {
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("================================================");
+			ps.println("= Existe el XATerminator                       =");
+			ps.print("================================================");
+			logger.info("{}", ps);
+		}
 		final XATerminator xATerminator = this.ctx.getBean(XATerminator.class);
 		Assert.assertNotNull(xATerminator);
 		XAResource xa = new XAResourceLog();
 
 		InboundWork w = null;
-		logger.info("================================================");
-		logger.info("= Enviamos un trabajo");
-		logger.info("================================================");
+		if (logger.isDebugEnabled()) {
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("================================================");
+			ps.println("= Enviamos un trabajo                          =");
+			ps.print("================================================");
+			logger.info("{}", ps);
+		}
 		w = ac.process(null);
 		logger.info("Esperando el Release el trabajo {}", w);
 		w.getLatch().await();
-		logger.info("================================================");
-		logger.info("= Enviamos un trabajo XA");
-		logger.info("================================================");
+		if (logger.isDebugEnabled()) {
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("================================================");
+			ps.println("= Enviamos un trabajo XA                       =");
+			ps.print("================================================");
+			logger.info("{}", ps);
+		}
 		w = ac.process(xa);
 		logger.info("Esperando el Release el trabajo {}", w);
 		w.getLatch().await();
-		logger.info("================================================");
-		logger.info("= Procesado Trabajo XA");
-		logger.info("================================================");
-
+		if (logger.isDebugEnabled()) {
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("================================================");
+			ps.println("= Procesado Trabajo XA");
+			ps.print("================================================");
+			logger.info("{}", ps);
+		}
 		InboundWork tx = null;
-		logger.info("================================================");
-		logger.info("= Enviamos un trabajo");
-		logger.info("================================================");
+		if (logger.isDebugEnabled()) {
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("================================================");
+			ps.println("= Enviamos un trabajo                          =");
+			ps.print("================================================");
+			logger.info("{}", ps);
+		}
 		tx = ac.processTx(null);
 		logger.info("Esperando el Release el trabajo {}", tx);
 		tx.getLatch().await();
 		logger.info("________________________________________________");
 
-		logger.info("================================================");
-		logger.info("= Enviamos un trabajo XA");
-		logger.info("================================================");
+		if (logger.isDebugEnabled()) {
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("================================================");
+			ps.println("= Procesado Trabajo XA");
+			ps.print("================================================");
+			logger.info("{}", ps);
+		}
 		tx = ac.processTx(xa);
 		logger.info("Esperando el Release el trabajo {}", tx);
 		tx.getLatch().await();
@@ -122,38 +174,74 @@ public class InboundBean {
 		wtx = ac.processInbound(null);
 		logger.info("Esperando el Release el trabajo {}", wtx);
 		wtx.getLatch().await();
-		logger.info("================================================");
-		logger.info("= Reproducimos un  commit sin XAResource");
-		logger.info("================================================");
-		if (xATerminator instanceof GeronimoTransactionManager) {
-			logger.info("Total Commits: {}", ((GeronimoTransactionManager) xATerminator).getTotalCommits());
+		if (logger.isDebugEnabled()) {
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("================================================");
+			ps.println("= Reproducimos un  commit sin XAResource       =");
+			ps.println("================================================");
+			logger.info("{}", ps);
 		}
+		if (xATerminator instanceof GeronimoTransactionManager) {
+			logger.info("Total Commits: {}",
+					((GeronimoTransactionManager) xATerminator)
+							.getTotalCommits());
+		}
+		logger.info("{}", xATerminator);
 		xATerminator.commit(wtx.getXid(), true);
 		if (xATerminator instanceof GeronimoTransactionManager) {
-			logger.info("Total Commits: {}", ((GeronimoTransactionManager) xATerminator).getTotalCommits());
+			logger.info("Total Commits: {}",
+					((GeronimoTransactionManager) xATerminator)
+							.getTotalCommits());
 		}
-		logger.info("================================================");
-		logger.info("= Final del  commit");
-		logger.info("================================================");
-		logger.info("================================================");
-		logger.info("= Enviamos un trabajo XA con XAResource");
-		logger.info("================================================");
+		if (logger.isDebugEnabled()) {
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("================================================");
+			ps.println("= Final del  commit");
+			ps.print("================================================");
+			logger.info("{}", ps);
+		}
+		if (logger.isDebugEnabled()) {
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("================================================");
+			ps.println("= Reproducimos un  commit con XAResource       =");
+			ps.println("================================================");
+			logger.info("{}", ps);
+		}
 		wtx = ac.processInbound(xa);
 		logger.info("Esperando el Release el trabajo {}", wtx);
 		wtx.getLatch().await();
-		logger.info("================================================");
-		logger.info("= Reproducimos un  commit");
-		logger.info("================================================");
+		if (logger.isDebugEnabled()) {
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("================================================");
+			ps.println("= Reproducimos un commit                       =");
+			ps.print("================================================");
+			logger.info("{}", ps);
+		}
+		logger.info("{}", xATerminator);
 		if (xATerminator instanceof GeronimoTransactionManager) {
-			logger.info("Total Commits: {}", ((GeronimoTransactionManager) xATerminator).getTotalCommits());
+			logger.info("Total Commits: {}",
+					((GeronimoTransactionManager) xATerminator)
+							.getTotalCommits());
 		}
 		xATerminator.commit(wtx.getXid(), true);
+		logger.info("{}", xATerminator);
 		if (xATerminator instanceof GeronimoTransactionManager) {
-			logger.info("Total Commits: {}", ((GeronimoTransactionManager) xATerminator).getTotalCommits());
+			logger.info("Total Commits: {}",
+					((GeronimoTransactionManager) xATerminator)
+							.getTotalCommits());
 		}
-		logger.info("================================================");
-		logger.info("= Final del  commit");
-		logger.info("================================================");
+		if (logger.isDebugEnabled()) {
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("================================================");
+			ps.println("= Final del  commit                            =");
+			ps.print("================================================");
+			logger.info("{}", ps);
+		}
 		logger.info("Liberado latch!!!");
 		xa = null;
 	}
@@ -166,7 +254,8 @@ public class InboundBean {
 	}
 
 	/**
-	 * @param ctx the ctx to set
+	 * @param ctx
+	 *            the ctx to set
 	 */
 	public void setCtx(final ConfigurableApplicationContext ctx) {
 		this.ctx = ctx;

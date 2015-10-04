@@ -44,7 +44,7 @@ class ReleaseContextHandler implements
 	@Override
 	public void before(ReleaseContext workContext)
 			throws WorkCompletedException {
-		logger.info("Before({})", workContext);
+		// do nothing
 	}
 
 	/**
@@ -56,7 +56,6 @@ class ReleaseContextHandler implements
 	@Override
 	public void after(final ReleaseContext workContext)
 			throws WorkCompletedException {
-		logger.info("after({})", workContext);
 		if (null != workContext.getInnerWork()) {
 			workContext.getExecutor().execute(new Runnable() {
 				/**

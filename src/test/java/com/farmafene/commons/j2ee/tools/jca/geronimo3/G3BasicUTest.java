@@ -52,6 +52,8 @@ public class G3BasicUTest {
 	@Autowired
 	private ConfigurableApplicationContext ctx;
 
+	private static ConfigurableApplicationContext CTX;
+
 	public G3BasicUTest() {
 		logger.info("G3BasicUTest<init>");
 	}
@@ -64,11 +66,13 @@ public class G3BasicUTest {
 	@AfterClass
 	public static void afterClass() {
 		logger.info("Destroy!");
+		CTX.close();
 	}
 
 	@Test
 	public void beanFactory1Test() {
 		Assert.assertNotNull(this.ctx);
+		CTX = this.ctx;
 		Assert.assertNotNull(this.ctx.getBean(TransactionManager.class));
 		logger.info("TxManager: {}", this.ctx.getBean(TransactionManager.class));
 		Assert.assertNotNull(this.ctx.getBean(WorkManager.class));
@@ -79,10 +83,5 @@ public class G3BasicUTest {
 				.getBean(TransactionSynchronizationRegistry.class));
 		logger.info("TransactionSynchronizationRegistry: {}",
 				this.ctx.getBean(TransactionSynchronizationRegistry.class));
-	}
-
-	@Test
-	public void beanFactory2Test() throws Exception {
-		logger.info("");
 	}
 }

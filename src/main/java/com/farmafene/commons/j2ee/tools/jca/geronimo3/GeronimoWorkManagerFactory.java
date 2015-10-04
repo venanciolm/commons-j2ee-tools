@@ -38,17 +38,15 @@ import org.apache.geronimo.connector.work.HintsContextHandler;
 import org.apache.geronimo.connector.work.TransactionContextHandler;
 import org.apache.geronimo.connector.work.WorkContextHandler;
 import org.apache.geronimo.transaction.manager.XAWork;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
-public class GeronimoWorkManagerFactory implements InitializingBean, DisposableBean, FactoryBean<WorkManager> {
+public class GeronimoWorkManagerFactory implements InitializingBean,
+		DisposableBean, FactoryBean<WorkManager> {
 
-	private static final Logger logger = LoggerFactory.getLogger(GeronimoWorkManagerFactory.class);
 	private GeronimoWorkManager workManager;
 	private int maxWorks = 75;
 	private int poolSize = 50;
@@ -71,7 +69,8 @@ public class GeronimoWorkManagerFactory implements InitializingBean, DisposableB
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append(getClass().getSimpleName()).append("={");
-		sb.append("workManager=").append(this.workManager.getClass().getSimpleName());
+		sb.append("workManager=").append(
+				this.workManager.getClass().getSimpleName());
 		sb.append(", maxWorks=").append(this.maxWorks);
 		sb.append(", poolSize=").append(this.poolSize);
 		if (this.enableRelease) {
@@ -96,9 +95,6 @@ public class GeronimoWorkManagerFactory implements InitializingBean, DisposableB
 			this.releaseThreadPool.shutdown();
 			this.releaseThreadPool.awaitTermination(60, TimeUnit.SECONDS);
 		}
-		if (logger.isDebugEnabled()) {
-			logger.debug("destroy()");
-		}
 	}
 
 	/**
@@ -112,20 +108,23 @@ public class GeronimoWorkManagerFactory implements InitializingBean, DisposableB
 		assert 1 <= this.poolSize : "invalid  poolSize value";
 		BlockingQueue<Runnable> bq = null;
 		if ((this.maxWorks - this.poolSize) > 0) {
-			bq = new LinkedBlockingQueue<Runnable>(this.maxWorks - this.poolSize);
+			bq = new LinkedBlockingQueue<Runnable>(this.maxWorks
+					- this.poolSize);
 		} else {
 			bq = new SynchronousQueue<Runnable>(true);
 			this.maxWorks = this.poolSize;
 		}
 		final NamedThreadFactory tpf = new NamedThreadFactory();
-		this.threadPool = new ThreadPoolExecutor(this.poolSize, this.poolSize, 60L, TimeUnit.SECONDS, bq, tpf);
+		this.threadPool = new ThreadPoolExecutor(this.poolSize, this.poolSize,
+				60L, TimeUnit.SECONDS, bq, tpf);
 		if (this.enableRelease) {
 			final BlockingQueue<Runnable> bqRelease = new LinkedBlockingQueue<Runnable>();
 			final NamedThreadFactory rtpf = new NamedThreadFactory();
 			rtpf.setType("R");
-			final int releasePoolSize = (this.releasePoolSize > this.poolSize) ? this.poolSize : ((this.releasePoolSize < 2) ? 1
-					: this.releasePoolSize);
-			this.releaseThreadPool = new ThreadPoolExecutor(releasePoolSize, releasePoolSize, 10L, TimeUnit.SECONDS, bqRelease, rtpf);
+			final int releasePoolSize = (this.releasePoolSize > this.poolSize) ? this.poolSize
+					: ((this.releasePoolSize < 2) ? 1 : this.releasePoolSize);
+			this.releaseThreadPool = new ThreadPoolExecutor(releasePoolSize,
+					releasePoolSize, 10L, TimeUnit.SECONDS, bqRelease, rtpf);
 			this.releasePoolSize = releasePoolSize;
 		}
 		@SuppressWarnings("rawtypes")
@@ -134,16 +133,15 @@ public class GeronimoWorkManagerFactory implements InitializingBean, DisposableB
 		workContextHandlers.add(new TransactionContextHandler(this.xaWork));
 		if (this.enableRelease) {
 			workContextHandlers.add(new ReleaseContextHandler());
-			final ReleaseProviderWorkManager rwm = new ReleaseProviderWorkManager(this.threadPool, this.threadPool, this.threadPool,
+			final ReleaseProviderWorkManager rwm = new ReleaseProviderWorkManager(
+					this.threadPool, this.threadPool, this.threadPool,
 					workContextHandlers, this.releaseThreadPool);
 			this.workManager = rwm;
 		} else {
-			this.workManager = new GeronimoWorkManager(this.threadPool, this.threadPool, this.threadPool, workContextHandlers);
+			this.workManager = new GeronimoWorkManager(this.threadPool,
+					this.threadPool, this.threadPool, workContextHandlers);
 		}
 		this.workManager.doStart();
-		if (logger.isDebugEnabled()) {
-			logger.debug("afterPropertiesSet() - {}", this);
-		}
 	}
 
 	/**
@@ -153,9 +151,6 @@ public class GeronimoWorkManagerFactory implements InitializingBean, DisposableB
 	 */
 	@Override
 	public WorkManager getObject() throws BeansException {
-		if (logger.isDebugEnabled()) {
-			logger.debug("getObject() {}", this.workManager);
-		}
 		return this.workManager;
 	}
 
@@ -187,7 +182,8 @@ public class GeronimoWorkManagerFactory implements InitializingBean, DisposableB
 	}
 
 	/**
-	 * @param poolSize the poolSize to set
+	 * @param poolSize
+	 *            the poolSize to set
 	 */
 	public void setPoolSize(final int poolSize) {
 		this.poolSize = poolSize;
@@ -201,7 +197,8 @@ public class GeronimoWorkManagerFactory implements InitializingBean, DisposableB
 	}
 
 	/**
-	 * @param xaWork the xaWork to set
+	 * @param xaWork
+	 *            the xaWork to set
 	 */
 	public void setXaWork(final XAWork xaWork) {
 		this.xaWork = xaWork;
@@ -215,7 +212,8 @@ public class GeronimoWorkManagerFactory implements InitializingBean, DisposableB
 	}
 
 	/**
-	 * @param enableRelease the enableRelease to set
+	 * @param enableRelease
+	 *            the enableRelease to set
 	 */
 	public void setEnableRelease(final boolean enableRelease) {
 		this.enableRelease = enableRelease;
@@ -223,6 +221,7 @@ public class GeronimoWorkManagerFactory implements InitializingBean, DisposableB
 
 	/**
 	 * Devuelve el valor de la propiedad 'maxWorks'
+	 * 
 	 * @return Propiedad maxWorks
 	 */
 	public int getMaxWorks() {
@@ -231,6 +230,7 @@ public class GeronimoWorkManagerFactory implements InitializingBean, DisposableB
 
 	/**
 	 * Devuelve el valor de la propiedad 'releasePoolSize'
+	 * 
 	 * @return Propiedad releasePoolSize
 	 */
 	public int getReleasePoolSize() {
@@ -239,8 +239,9 @@ public class GeronimoWorkManagerFactory implements InitializingBean, DisposableB
 
 	/**
 	 * Asigna el valor de la propiedad 'releasePoolSize'
-	 * @param releasePoolSize valor que se le quiere dar a la propiedad
-	 *            'releasePoolSize'
+	 * 
+	 * @param releasePoolSize
+	 *            valor que se le quiere dar a la propiedad 'releasePoolSize'
 	 */
 	public void setReleasePoolSize(final int releasePoolSize) {
 		this.releasePoolSize = releasePoolSize;
@@ -248,6 +249,7 @@ public class GeronimoWorkManagerFactory implements InitializingBean, DisposableB
 
 	/**
 	 * Devuelve el valor de la propiedad 'releaseThreadPool'
+	 * 
 	 * @return Propiedad releaseThreadPool
 	 */
 	public ThreadPoolExecutor getReleaseThreadPool() {
@@ -256,8 +258,9 @@ public class GeronimoWorkManagerFactory implements InitializingBean, DisposableB
 
 	/**
 	 * Asigna el valor de la propiedad 'releaseThreadPool'
-	 * @param releaseThreadPool valor que se le quiere dar a la propiedad
-	 *            'releaseThreadPool'
+	 * 
+	 * @param releaseThreadPool
+	 *            valor que se le quiere dar a la propiedad 'releaseThreadPool'
 	 */
 	public void setReleaseThreadPool(final ThreadPoolExecutor releaseThreadPool) {
 		this.releaseThreadPool = releaseThreadPool;
@@ -265,7 +268,9 @@ public class GeronimoWorkManagerFactory implements InitializingBean, DisposableB
 
 	/**
 	 * Asigna el valor de la propiedad 'maxWorks'
-	 * @param maxWorks valor que se le quiere dar a la propiedad 'maxWorks'
+	 * 
+	 * @param maxWorks
+	 *            valor que se le quiere dar a la propiedad 'maxWorks'
 	 */
 	public void setMaxWorks(final int maxWorks) {
 		this.maxWorks = maxWorks;

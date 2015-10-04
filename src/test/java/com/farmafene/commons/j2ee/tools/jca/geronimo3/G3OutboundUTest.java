@@ -49,6 +49,7 @@ public class G3OutboundUTest implements InitializingBean {
 
 	@Autowired
 	private ConfigurableApplicationContext ctx;
+	private static ConfigurableApplicationContext CTX;
 	private OutBoundBean bean;
 
 	@BeforeClass
@@ -59,6 +60,7 @@ public class G3OutboundUTest implements InitializingBean {
 	@AfterClass
 	public static void afterClass() {
 		logger.info("Destroy");
+		CTX.close();
 	}
 
 	public G3OutboundUTest() {
@@ -67,6 +69,7 @@ public class G3OutboundUTest implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		CTX = this.ctx;
 		bean.setCtx(ctx);
 		bean.afterPropertiesSet();
 	}

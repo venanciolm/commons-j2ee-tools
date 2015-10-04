@@ -29,6 +29,7 @@ import javax.resource.spi.work.WorkException;
 import javax.transaction.xa.XAException;
 
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +42,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.farmafene.commons.j2ee.tools.jca.common.InboundBean;
+import com.farmafene.commons.j2ee.tools.jca.common.StringPrintStream;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:com/farmafene/commons/j2ee/tools/jca/geronimo3/inbound.xml" })
@@ -51,6 +53,7 @@ public class G3InboundUTest implements InitializingBean {
 
 	@Autowired
 	private ConfigurableApplicationContext ctx;
+	private static ConfigurableApplicationContext CTX;
 
 	@BeforeClass
 	public static void beforeClass() throws SQLException {
@@ -60,6 +63,7 @@ public class G3InboundUTest implements InitializingBean {
 	@AfterClass
 	public static void afterClass() {
 		logger.info("Destroy!");
+		CTX.close();
 	}
 
 	/**
@@ -69,9 +73,16 @@ public class G3InboundUTest implements InitializingBean {
 	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		logger.info("================================================");
-		logger.info("= Begin of Test");
-		logger.info("================================================");
+		if (logger.isInfoEnabled()) {
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("================================================");
+			ps.println("= Begin of Test                                =");
+			ps.print("================================================");
+			logger.info("{}", ps);
+		}
+		Assert.assertNotNull(this.ctx);
+		CTX = this.ctx;
 	}
 
 	@Test

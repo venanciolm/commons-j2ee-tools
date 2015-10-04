@@ -99,7 +99,6 @@ public class DefaultMessageEndPointFactory implements MessageEndpointFactory,
 	@Override
 	public MessageEndpoint createEndpoint(XAResource xaResource)
 			throws UnavailableException {
-		logger.info("createEndpoint(" + xaResource + ")");
 		return createEndpoint(xaResource, Long.MAX_VALUE);
 	}
 
@@ -112,7 +111,6 @@ public class DefaultMessageEndPointFactory implements MessageEndpointFactory,
 	@Override
 	public MessageEndpoint createEndpoint(XAResource xaResource, long timeout)
 			throws UnavailableException {
-		logger.info("createEndpoint(" + xaResource + "," + timeout + ")");
 		Object a = null;
 		Class<?>[] interfaces = null;
 		MessageEndpoint proxy = null;
@@ -164,7 +162,6 @@ public class DefaultMessageEndPointFactory implements MessageEndpointFactory,
 	@Override
 	public boolean isDeliveryTransacted(Method method)
 			throws NoSuchMethodException {
-		logger.info("isDeliveryTransacted(" + method + ")");
 		return null != transactionManager;
 	}
 

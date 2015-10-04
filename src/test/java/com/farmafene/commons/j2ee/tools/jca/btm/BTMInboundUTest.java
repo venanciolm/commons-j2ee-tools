@@ -42,6 +42,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.farmafene.commons.j2ee.tools.jca.common.InboundBean;
+import com.farmafene.commons.j2ee.tools.jca.common.StringPrintStream;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:com/farmafene/commons/j2ee/tools/jca/btm/inbound.xml" })
@@ -72,9 +73,14 @@ public class BTMInboundUTest implements InitializingBean {
 	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		logger.info("================================================");
-		logger.info("= Begin of Test");
-		logger.info("================================================");
+		if (logger.isInfoEnabled()) {
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("================================================");
+			ps.println("= Begin of Test                                =");
+			ps.print("================================================");
+			logger.info("{}", ps);
+		}
 		Assert.assertNotNull(this.ctx);
 		CTX = this.ctx;
 	}

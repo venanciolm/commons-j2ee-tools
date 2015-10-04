@@ -29,7 +29,8 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
-public class BTMConectionFactoryFactoryBean implements FactoryBean<Object>, InitializingBean, DisposableBean {
+public class BTMConectionFactoryFactoryBean implements FactoryBean<Object>,
+		InitializingBean, DisposableBean {
 
 	private BTMConnectionManager connectionManager;
 	private ManagedConnectionFactory managedConnectionFactory;
@@ -74,7 +75,8 @@ public class BTMConectionFactoryFactoryBean implements FactoryBean<Object>, Init
 		this.connectionManager.setClassName(String.class.getCanonicalName());
 		this.connectionManager.setMinPoolSize(this.minPoolSize);
 		this.connectionManager.setMaxPoolSize(this.maxPoolSize);
-		this.connectionManager.setManagedConnectionFactory(this.managedConnectionFactory);
+		this.connectionManager
+				.setManagedConnectionFactory(this.managedConnectionFactory);
 		this.connectionManager.setUniqueName(this.name);
 		this.connectionManager.setAllowLocalTransactions(true);
 		this.connectionManager.setApplyTransactionTimeout(true);
@@ -108,7 +110,7 @@ public class BTMConectionFactoryFactoryBean implements FactoryBean<Object>, Init
 	 */
 	@Override
 	public Class<?> getObjectType() {
-		return Object.class;
+		return this.connectionManager.getConnectionFactory().getClass();
 	}
 
 	/**
@@ -122,14 +124,17 @@ public class BTMConectionFactoryFactoryBean implements FactoryBean<Object>, Init
 	}
 
 	/**
-	 * @param managedConnectionFactory the managedConnectionFactory to set
+	 * @param managedConnectionFactory
+	 *            the managedConnectionFactory to set
 	 */
-	public void setManagedConnectionFactory(final ManagedConnectionFactory managedConnectionFactory) {
+	public void setManagedConnectionFactory(
+			final ManagedConnectionFactory managedConnectionFactory) {
 		this.managedConnectionFactory = managedConnectionFactory;
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(final String name) {
 		this.name = name;
@@ -150,7 +155,8 @@ public class BTMConectionFactoryFactoryBean implements FactoryBean<Object>, Init
 	}
 
 	/**
-	 * @param minPoolSize the minPoolSize to set
+	 * @param minPoolSize
+	 *            the minPoolSize to set
 	 */
 	public void setMinPoolSize(final int minPoolSize) {
 		this.minPoolSize = minPoolSize;
@@ -164,7 +170,8 @@ public class BTMConectionFactoryFactoryBean implements FactoryBean<Object>, Init
 	}
 
 	/**
-	 * @param maxPoolSize the maxPoolSize to set
+	 * @param maxPoolSize
+	 *            the maxPoolSize to set
 	 */
 	public void setMaxPoolSize(final int maxPoolSize) {
 		this.maxPoolSize = maxPoolSize;

@@ -49,14 +49,17 @@ import bitronix.tm.resource.common.XAResourceProducer;
 import bitronix.tm.resource.common.XAStatefulHolder;
 
 import com.farmafene.commons.j2ee.tools.jca.IEnlistXAResource;
+import com.farmafene.commons.j2ee.tools.jca.common.StringPrintStream;
 
 /**
  * @author vlopez
  */
 @SuppressWarnings("serial")
-public class BTMInboundRA extends ResourceBean implements XAResourceProducer, IEnlistXAResource {
+public class BTMInboundRA extends ResourceBean implements XAResourceProducer,
+		IEnlistXAResource {
 
-	private static final Logger logger = LoggerFactory.getLogger(BTMInboundRA.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(BTMInboundRA.class);
 	private boolean failed;
 	private XAStatefulHolder revoveryXAStatefulHolder;
 	private RecoveryXAResourceHolder recoveryXAResourceHolder;
@@ -75,18 +78,22 @@ public class BTMInboundRA extends ResourceBean implements XAResourceProducer, IE
 	 * @see com.farmafene.commons.jca.IEnlistXAResource#enlist(javax.transaction.xa.XAResource)
 	 */
 	@Override
-	public void enlist(final XAResource xaResource) throws SystemException, RollbackException {
+	public void enlist(final XAResource xaResource) throws SystemException,
+			RollbackException {
 		XAResourceHolder item = findXAResourceHolder(xaResource);
 		if (null == item) {
-			final InboundXAResourceHolder holder = new InboundXAResourceHolder(xaResource, this);
+			final InboundXAResourceHolder holder = new InboundXAResourceHolder(
+					xaResource, this);
 			item = holder;
 			this.enlisted.put(xaResource, item);
 			TransactionContextHelper.enlistInCurrentTransaction(holder);
-			logger.debug("enlist({})", item);
 		} else {
-			logger.info("No encontrado el contedor!");
+			logger.debug("Container not found!");
 		}
-		logger.debug("Elementos enlistados = {}", this.enlisted.size());
+		if (logger.isDebugEnabled()) {
+			logger.debug("Enlisted: {} in {}", xaResource,
+					BTMLocator.getBitronixTransactionManager());
+		}
 	}
 
 	/**
@@ -96,10 +103,9 @@ public class BTMInboundRA extends ResourceBean implements XAResourceProducer, IE
 	 */
 	@Override
 	public Reference getReference() throws NamingException {
-		if (logger.isDebugEnabled()) {
-			logger.debug("creating new JNDI reference of " + this);
-		}
-		return new Reference(ConnectionManager.class.getName(), new StringRefAddr("uniqueName", getUniqueName()), this.getClassName(), null);
+		return new Reference(ConnectionManager.class.getName(),
+				new StringRefAddr("uniqueName", getUniqueName()),
+				this.getClassName(), null);
 	}
 
 	/**
@@ -110,27 +116,34 @@ public class BTMInboundRA extends ResourceBean implements XAResourceProducer, IE
 	@Override
 	public XAResourceHolderState startRecovery() throws RecoveryException {
 		if (logger.isDebugEnabled()) {
-			logger.info("/*--------------------------------------------------+\\");
-			logger.info("|| startRecovery                                    ||");
-			logger.info("\\+--------------------------------------------------*/");
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("/*--------------------------------------------------+\\");
+			ps.println("|| startRecovery                                    ||");
+			ps.print("\\+--------------------------------------------------*/");
+			logger.debug("{}", ps);
 		}
 		try {
 			/*
 			 * En realidad, no hace nada!
 			 */
-			this.revoveryXAStatefulHolder = new InboundXAResourceHolder(new XAResourceRecovery(), this);
-			this.revoveryXAStatefulHolder.setState(XAStatefulHolder.STATE_NOT_ACCESSIBLE);
-			this.recoveryXAResourceHolder = new RecoveryXAResourceHolder(this.revoveryXAStatefulHolder.getXAResourceHolders().get(0));
-			return new XAResourceHolderState(this.recoveryXAResourceHolder, this);
+			this.revoveryXAStatefulHolder = new InboundXAResourceHolder(
+					new XAResourceRecovery(), this);
+			this.revoveryXAStatefulHolder
+					.setState(XAStatefulHolder.STATE_NOT_ACCESSIBLE);
+			this.recoveryXAResourceHolder = new RecoveryXAResourceHolder(
+					this.revoveryXAStatefulHolder.getXAResourceHolders().get(0));
+			return new XAResourceHolderState(this.recoveryXAResourceHolder,
+					this);
 		} catch (final Exception e) {
-			if (logger.isDebugEnabled()) {
-				logger.info("/*--------------------------------------------------+\\");
-				logger.info("|| startRecovery                                    ||");
-			}
-			logger.error("Error: ", e);
-			if (logger.isDebugEnabled()) {
-				logger.info("\\+--------------------------------------------------*/");
-			}
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("/*--------------------------------------------------+\\");
+			ps.println("|| startRecovery                                    ||");
+			ps.println("|| Error:                                           ||");
+			e.printStackTrace(ps);
+			ps.print("\\+--------------------------------------------------*/");
+			logger.error("{}", ps);
 			throw new RecoveryException("startRecovery()", e);
 		}
 	}
@@ -143,22 +156,25 @@ public class BTMInboundRA extends ResourceBean implements XAResourceProducer, IE
 	@Override
 	public void endRecovery() throws RecoveryException {
 		if (logger.isDebugEnabled()) {
-			logger.debug("/*--------------------------------------------------+\\");
-			logger.debug("|| endRecovery                                      ||");
-			logger.debug("\\+--------------------------------------------------*/");
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("/*--------------------------------------------------+\\");
+			ps.println("|| endRecovery                                      ||");
+			ps.print("\\+--------------------------------------------------*/");
+			logger.debug("{}", ps);
 		}
 		try {
 			this.recoveryXAResourceHolder.close();
 			this.revoveryXAStatefulHolder.close();
 		} catch (final Exception e) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("/*--------------------------------------------------+\\");
-				logger.debug("|| endRecovery                                      ||");
-			}
-			logger.error("Error: ", e);
-			if (logger.isDebugEnabled()) {
-				logger.debug("\\+--------------------------------------------------*/");
-			}
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("/*--------------------------------------------------+\\");
+			ps.println("|| endRecovery                                      ||");
+			ps.println("|| Error:                                           ||");
+			e.printStackTrace(ps);
+			ps.print("\\+--------------------------------------------------*/");
+			logger.error("{}", ps);
 			throw new RecoveryException("endRecovery()", e);
 		}
 	}
@@ -224,7 +240,8 @@ public class BTMInboundRA extends ResourceBean implements XAResourceProducer, IE
 	 *      bitronix.tm.resource.common.ResourceBean)
 	 */
 	@Override
-	public XAStatefulHolder createPooledConnection(final Object xaFactory, final ResourceBean bean) throws Exception {
+	public XAStatefulHolder createPooledConnection(final Object xaFactory,
+			final ResourceBean bean) throws Exception {
 		throw new UnsupportedOperationException("Not supported!");
 	}
 
@@ -238,8 +255,9 @@ public class BTMInboundRA extends ResourceBean implements XAResourceProducer, IE
 		boolean isInTransaction = false;
 		try {
 			final boolean hayTx = TransactionContextHelper.currentTransaction() != null;
-			isInTransaction = hayTx && Status.STATUS_ACTIVE == TransactionContextHelper.currentTransaction().getStatus();
-			logger.info("Hay una transaccion: {}, y es activa: {}", hayTx, isInTransaction);
+			isInTransaction = hayTx
+					&& Status.STATUS_ACTIVE == TransactionContextHelper
+							.currentTransaction().getStatus();
 		} catch (final SystemException e) {
 			// do nothing
 		}

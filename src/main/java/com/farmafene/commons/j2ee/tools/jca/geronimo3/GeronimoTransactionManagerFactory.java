@@ -24,17 +24,12 @@
 package com.farmafene.commons.j2ee.tools.jca.geronimo3;
 
 import org.apache.geronimo.transaction.manager.GeronimoTransactionManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
 public class GeronimoTransactionManagerFactory implements InitializingBean,
 		DisposableBean, FactoryBean<GeronimoTransactionManager> {
-
-	private static final Logger logger = LoggerFactory
-			.getLogger(GeronimoTransactionManagerFactory.class);
 
 	private GeronimoTransactionManager transactionManager;
 	private int defaultTransactionTimeoutSeconds = 120;
@@ -62,9 +57,6 @@ public class GeronimoTransactionManagerFactory implements InitializingBean,
 	 */
 	@Override
 	public GeronimoTransactionManager getObject() throws Exception {
-		if (logger.isDebugEnabled()) {
-			logger.debug("getObject(): " + this.transactionManager);
-		}
 		return this.transactionManager;
 	}
 
@@ -76,9 +68,6 @@ public class GeronimoTransactionManagerFactory implements InitializingBean,
 	@Override
 	public Class<?> getObjectType() {
 		final Class<?> clazz = GeronimoTransactionManager.class;
-		if (logger.isDebugEnabled()) {
-			logger.debug("getObjectType(): " + clazz);
-		}
 		return clazz;
 	}
 
@@ -99,9 +88,7 @@ public class GeronimoTransactionManagerFactory implements InitializingBean,
 	 */
 	@Override
 	public void destroy() throws Exception {
-		if (logger.isDebugEnabled()) {
-			logger.debug("destroy()");
-		}
+		// do nothing
 	}
 
 	/**
@@ -114,9 +101,6 @@ public class GeronimoTransactionManagerFactory implements InitializingBean,
 		assert 0 < this.defaultTransactionTimeoutSeconds : "Invalid transaction timeout!";
 		this.transactionManager = new GeronimoTransactionManager(
 				this.defaultTransactionTimeoutSeconds);
-		if (logger.isDebugEnabled()) {
-			logger.debug("afterPropertiesSet()." + this);
-		}
 	}
 
 	/**

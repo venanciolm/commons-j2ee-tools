@@ -53,4 +53,10 @@
 		<property name="maxWorks" value="1" />
 		<property name="xaWork" ref="XAWork" />
 	</bean>
+	<bean id="IEnlistXAResource"
+		class="com.farmafene.commons.j2ee.tools.jca.btm.BTMEnlistXAResourceFactoryBean">
+		<property name="MessageEndpointFactory"
+			value="com.farmafene.commons.j2ee.tools.jca.DefaultMessageEndPointFactory" />
+		<property name="name" value="Test" />
+	</bean>
 </beans>

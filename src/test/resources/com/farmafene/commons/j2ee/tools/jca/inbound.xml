@@ -55,14 +55,7 @@
 			value="com.farmafene.commons.j2ee.tools.jca.MessageEPIntf" />
 		<property name="messageDrivenBeanClass"
 			value="com.farmafene.commons.j2ee.tools.jca.MessageEPImpl" />
-		<property name="IEnlistXAResource">
-			<bean
-				class="com.farmafene.commons.j2ee.tools.jca.btm.BTMEnlistXAResourceFactoryBean">
-				<property name="MessageEndpointFactory"
-					value="com.farmafene.commons.j2ee.tools.jca.DefaultMessageEndPointFactory" />
-				<property name="name" value="Test" />
-			</bean>
-		</property>
+		<property name="IEnlistXAResource" ref="IEnlistXAResource" />
 	</bean>
 	<bean id="ra" class="com.farmafene.commons.j2ee.tools.jca.ResourceAdapterLog" />
 	<bean id="as"

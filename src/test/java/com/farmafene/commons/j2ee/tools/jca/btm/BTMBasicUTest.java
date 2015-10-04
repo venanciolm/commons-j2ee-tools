@@ -88,9 +88,4 @@ public class BTMBasicUTest {
 		logger.info("TransactionSynchronizationRegistry: {}",
 				this.ctx.getBean(TransactionSynchronizationRegistry.class));
 	}
-
-	@Test
-	public void beanFactory2Test() throws Exception {
-		logger.info("");
-	}
 }

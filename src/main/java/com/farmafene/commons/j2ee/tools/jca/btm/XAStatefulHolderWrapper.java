@@ -23,9 +23,6 @@
  */
 package com.farmafene.commons.j2ee.tools.jca.btm;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,9 +48,13 @@ import bitronix.tm.resource.common.XAStatefulHolder;
 import bitronix.tm.utils.Decoder;
 import bitronix.tm.utils.MonotonicClock;
 
-public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements ConnectionEventListener, StateChangeListener {
+import com.farmafene.commons.j2ee.tools.jca.common.StringPrintStream;
 
-	private static final Logger logger = LoggerFactory.getLogger(XAStatefulHolderWrapper.class);
+public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
+		ConnectionEventListener, StateChangeListener {
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(XAStatefulHolderWrapper.class);
 	private ManagedConnection managedConnection;
 	private BTMConnectionManager connectionManager;
 	private final List<XAResourceHolder> holders;
@@ -68,7 +69,8 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 		this.addStateChangeEventListener(this);
 	}
 
-	public XAStatefulHolderWrapper(final ManagedConnection mc, final BTMConnectionManager connectionManager) {
+	public XAStatefulHolderWrapper(final ManagedConnection mc,
+			final BTMConnectionManager connectionManager) {
 		this();
 		this.managedConnection = mc;
 		this.connectionManager = connectionManager;
@@ -84,7 +86,8 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append(getClass().getSimpleName()).append("={");
-		sb.append("state=").append(Decoder.decodeXAStatefulHolderState(getState()));
+		sb.append("state=").append(
+				Decoder.decodeXAStatefulHolderState(getState()));
 		sb.append("}");
 		return sb.toString();
 	}
@@ -136,7 +139,6 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 	 */
 	@Override
 	public ResourceBean getResourceBean() {
-		logger.info("getResourceBean()");
 		return this.connectionManager;
 	}
 
@@ -147,7 +149,6 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 	 */
 	@Override
 	public List<XAResourceHolder> getXAResourceHolders() {
-		logger.info("getXAResourceHolders()");
 		return this.holders;
 	}
 
@@ -160,7 +161,6 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 	public void close() throws Exception {
 		setState(STATE_CLOSED);
 		this.managedConnection.destroy();
-		logger.info("close(): ManagedConnection " + this.managedConnection + ", destroyed()");
 	}
 
 	/**
@@ -178,7 +178,6 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 	 */
 	@Override
 	public void setState(final int state) {
-		logger.info("setState(" + Decoder.decodeXAStatefulHolderState(state) + ")");
 		super.setState(state);
 	}
 
@@ -198,12 +197,11 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 			logger.error("Error en el cierre de conexión(Requeue)", e);
 		}
 		if (this.fail) {
-			logger.info("Realizando el shrink!!! {}.", this);
+			logger.warn("Fail in connection close(): {}", event);
 			try {
 				this.connectionManager.getXaPool().shrink();
 			} catch (final Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("Error en el shrink!", e);
 			}
 		}
 	}
@@ -251,8 +249,7 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 
 	private void log(final String method, final ConnectionEvent event) {
 		if (logger.isDebugEnabled()) {
-			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			final PrintWriter pf = new PrintWriter(baos);
+			StringPrintStream pf = new StringPrintStream();
 			pf.println();
 			pf.println("/*========================================================+|");
 			pf.print("|| Method:           ");
@@ -264,19 +261,7 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 			pf.print("|| ConnectionHandle: ");
 			pf.println(event.getConnectionHandle());
 			pf.print("|+=========================================================*/");
-			pf.flush();
-			try {
-				baos.flush();
-			} catch (final IOException e) {
-				// do nothing
-			}
-			pf.close();
-			logger.debug(baos.toString());
-			try {
-				baos.close();
-			} catch (final IOException e) {
-				// do nothing
-			}
+			logger.debug("{}", pf);
 		}
 	}
 
@@ -287,9 +272,6 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 	 */
 	@Override
 	public Object getConnectionHandle() throws Exception {
-		if (logger.isDebugEnabled()) {
-			logger.debug("getting connection handle from " + this);
-		}
 		final int oldState = getState();
 
 		// Increment the usage count
@@ -309,8 +291,8 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 			setState(STATE_ACCESSIBLE);
 		}
 		//
-		final Object connObject = this.managedConnection.getConnection(null, this.connectionManager.getConnectionRequestInfo());
-		logger.debug("got connection handle from {}, {}", this, connObject);
+		final Object connObject = this.managedConnection.getConnection(null,
+				this.connectionManager.getConnectionRequestInfo());
 		return connObject;
 	}
 
@@ -321,13 +303,12 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 	 *      int, int)
 	 */
 	@Override
-	public void stateChanged(final XAStatefulHolder source, final int oldState, final int newState) {
+	public void stateChanged(final XAStatefulHolder source, final int oldState,
+			final int newState) {
 		if (newState == STATE_IN_POOL) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("requeued Object connection of " + this.managedConnection);
-			}
 			if (!this.fail) {
-				this.lastReleaseDate = new Date(MonotonicClock.currentTimeMillis());
+				this.lastReleaseDate = new Date(
+						MonotonicClock.currentTimeMillis());
 			} else {
 				this.lastReleaseDate = new Date();
 				this.lastReleaseDate.setTime(0);
@@ -346,8 +327,6 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 		if (oldState == STATE_NOT_ACCESSIBLE && newState == STATE_ACCESSIBLE) {
 			TransactionContextHelper.recycle(this);
 		}
-		logger.debug("\n==============\nstateChanged({},{})\n - {}\n==============", Decoder.decodeXAStatefulHolderState(oldState),
-				Decoder.decodeXAStatefulHolderState(newState), source);
 	}
 
 	/**
@@ -357,10 +336,12 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 	 *      int, int)
 	 */
 	@Override
-	public void stateChanging(final XAStatefulHolder source, final int currentState, final int futureState) {
+	public void stateChanging(final XAStatefulHolder source,
+			final int currentState, final int futureState) {
 		if (futureState == STATE_IN_POOL) {
 			if (this.usageCount > 0) {
-				logger.warn("usage count too high (" + this.usageCount + ") on connection returned to pool " + source);
+				logger.warn("usage count too high (" + this.usageCount
+						+ ") on connection returned to pool " + source);
 			}
 		}
 	}

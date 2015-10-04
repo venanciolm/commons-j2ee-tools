@@ -30,9 +30,6 @@ import java.util.Map;
 
 import javax.transaction.xa.XAResource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import bitronix.tm.BitronixXid;
 import bitronix.tm.internal.XAResourceHolderState;
 import bitronix.tm.resource.common.ResourceBean;
@@ -43,11 +40,11 @@ import bitronix.tm.utils.Uid;
 
 public class InboundXAResourceHolder implements XAResourceHolder {
 
-	private static final Logger logger = LoggerFactory.getLogger(InboundXAResourceHolder.class);
 	private final XAResource xAResource;
 	private final ResourceBean resourceBean;
 
-	public InboundXAResourceHolder(final XAResource xAResource, final ResourceBean resourceBean) {
+	public InboundXAResourceHolder(final XAResource xAResource,
+			final ResourceBean resourceBean) {
 		this.xAResource = xAResource;
 		this.resourceBean = resourceBean;
 	}
@@ -72,8 +69,9 @@ public class InboundXAResourceHolder implements XAResourceHolder {
 	 *      (bitronix.tm.resource.common.StateChangeListener)
 	 */
 	@Override
-	public void addStateChangeEventListener(final StateChangeListener statechangelistener) {
-		logger.debug("XAStatefulHolder.addStateChangeEventListener()");
+	public void addStateChangeEventListener(
+			final StateChangeListener statechangelistener) {
+		// do nothing
 	}
 
 	/**
@@ -84,8 +82,9 @@ public class InboundXAResourceHolder implements XAResourceHolder {
 	 *      (bitronix.tm.resource.common.StateChangeListener)
 	 */
 	@Override
-	public void removeStateChangeEventListener(final StateChangeListener statechangelistener) {
-		logger.debug("XAStatefulHolder.removeStateChangeEventListener()");
+	public void removeStateChangeEventListener(
+			final StateChangeListener statechangelistener) {
+		// do nothing
 	}
 
 	/**
@@ -95,7 +94,7 @@ public class InboundXAResourceHolder implements XAResourceHolder {
 	 */
 	@Override
 	public void close() throws Exception {
-		logger.debug("XAStatefulHolder.close()");
+		// do nothing
 	}
 
 	/**
@@ -106,7 +105,6 @@ public class InboundXAResourceHolder implements XAResourceHolder {
 	 */
 	@Override
 	public Object getConnectionHandle() throws Exception {
-		logger.debug("XAStatefulHolder.getConnectionHandle()");
 		return null;
 	}
 
@@ -118,7 +116,6 @@ public class InboundXAResourceHolder implements XAResourceHolder {
 	 */
 	@Override
 	public Date getLastReleaseDate() {
-		logger.debug("XAStatefulHolder.getLastReleaseDate()");
 		return null;
 	}
 
@@ -130,7 +127,6 @@ public class InboundXAResourceHolder implements XAResourceHolder {
 	 */
 	@Override
 	public int getState() {
-		logger.debug("XAStatefulHolder.getState()");
 		return XAStatefulHolder.STATE_ACCESSIBLE;
 	}
 
@@ -142,7 +138,6 @@ public class InboundXAResourceHolder implements XAResourceHolder {
 	 */
 	@Override
 	public List<XAResourceHolder> getXAResourceHolders() {
-		logger.debug("XAStatefulHolder.getXAResourceHolders()");
 		return Arrays.asList(new XAResourceHolder[] { this });
 	}
 
@@ -153,8 +148,7 @@ public class InboundXAResourceHolder implements XAResourceHolder {
 	 */
 	@Override
 	public void setState(final int i) {
-		logger.debug("XAStatefulHolder.setState()");
-
+		// do nothing
 	}
 
 	/*----------------------------------------- RESOURCE HOLDER ------------------------*/
@@ -185,8 +179,8 @@ public class InboundXAResourceHolder implements XAResourceHolder {
 	 *      getXAResourceHolderStatesForGtrid(bitronix.tm.utils.Uid)
 	 */
 	@Override
-	public Map<Uid, XAResourceHolderState> getXAResourceHolderStatesForGtrid(final Uid uid) {
-		logger.debug("XAResourceHolder.getXAResourceHolderStatesForGtrid()");
+	public Map<Uid, XAResourceHolderState> getXAResourceHolderStatesForGtrid(
+			final Uid uid) {
 		return null;
 	}
 
@@ -198,7 +192,6 @@ public class InboundXAResourceHolder implements XAResourceHolder {
 	 */
 	@Override
 	public boolean hasStateForXAResource(final XAResourceHolder xaresourceholder) {
-		logger.debug("XAResourceHolder.hasStateForXAResource()");
 		return true;
 	}
 
@@ -210,9 +203,8 @@ public class InboundXAResourceHolder implements XAResourceHolder {
 	 *      bitronix.tm.internal.XAResourceHolderState)
 	 */
 	@Override
-	public void putXAResourceHolderState(final BitronixXid bitronixxid, final XAResourceHolderState xaresourceholderstate) {
-		logger.debug("XAResourceHolder.putXAResourceHolderState()");
-
+	public void putXAResourceHolderState(final BitronixXid bitronixxid,
+			final XAResourceHolderState xaresourceholderstate) {
 	}
 
 	/**
@@ -223,8 +215,5 @@ public class InboundXAResourceHolder implements XAResourceHolder {
 	 */
 	@Override
 	public void removeXAResourceHolderState(final BitronixXid bitronixxid) {
-		logger.debug("XAResourceHolder.removeXAResourceHolderState()");
-
 	}
-
 }

@@ -29,9 +29,14 @@ import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
 import javax.transaction.xa.XAResource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DefaultEnlistXAResource implements IEnlistXAResource {
 
 	private TransactionManager transactionManager;
+	private static final Logger logger = LoggerFactory
+			.getLogger(DefaultEnlistXAResource.class);
 
 	public DefaultEnlistXAResource() {
 	}
@@ -58,6 +63,10 @@ public class DefaultEnlistXAResource implements IEnlistXAResource {
 	public void enlist(XAResource xaResource) throws IllegalStateException,
 			RollbackException, SystemException {
 		transactionManager.getTransaction().enlistResource(xaResource);
+		if (logger.isDebugEnabled()) {
+			logger.debug("Enlisted: {} in {}", xaResource,
+					transactionManager.getTransaction());
+		}
 	}
 
 	/**

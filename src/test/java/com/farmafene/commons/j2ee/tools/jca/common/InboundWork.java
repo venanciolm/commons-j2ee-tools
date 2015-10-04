@@ -92,8 +92,15 @@ public class InboundWork implements Work, WorkContextProvider {
 	 */
 	@Override
 	public void release() {
-		logger.info("Ejecutado release y liberando latch",
-				new RuntimeException("Test Exception"));
+		if (logger.isInfoEnabled()) {
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("=======================================");
+			ps.println("= Ejecutado release y liberando latch =");
+			ps.print("=======================================");
+			logger.info("{}", ps);
+		}
+
 		this.latch.countDown();
 	}
 

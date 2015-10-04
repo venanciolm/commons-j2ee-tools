@@ -27,13 +27,9 @@ import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import bitronix.tm.TransactionManagerServices;
 
 class XAResourceRecovery implements XAResource {
-	private static final Logger logger = LoggerFactory.getLogger(XAResourceRecovery.class);
 
 	public XAResourceRecovery() {
 
@@ -59,9 +55,7 @@ class XAResourceRecovery implements XAResource {
 	 */
 	@Override
 	public void start(final Xid xid, final int flags) throws XAException {
-		if (logger.isDebugEnabled()) {
-			logger.debug(this + ".start(Xid=" + xid + ", flags=" + flags + ")");
-		}
+		// do nothing
 	}
 
 	/**
@@ -71,9 +65,6 @@ class XAResourceRecovery implements XAResource {
 	 */
 	@Override
 	public boolean setTransactionTimeout(final int seconds) throws XAException {
-		if (logger.isDebugEnabled()) {
-			logger.debug(this + ".setTransactionTimeout(seconds=" + seconds + ")");
-		}
 		return true;
 	}
 
@@ -84,9 +75,7 @@ class XAResourceRecovery implements XAResource {
 	 */
 	@Override
 	public void rollback(final Xid xid) throws XAException {
-		if (logger.isDebugEnabled()) {
-			logger.debug(this + ".rollback(Xid=" + xid + ")");
-		}
+		// do nothing
 	}
 
 	/**
@@ -96,9 +85,6 @@ class XAResourceRecovery implements XAResource {
 	 */
 	@Override
 	public Xid[] recover(final int flag) throws XAException {
-		if (logger.isDebugEnabled()) {
-			logger.debug(this + ".recover(flag=" + flag + ")");
-		}
 		return new Xid[] {};
 	}
 
@@ -109,9 +95,6 @@ class XAResourceRecovery implements XAResource {
 	 */
 	@Override
 	public int prepare(final Xid xid) throws XAException {
-		if (logger.isDebugEnabled()) {
-			logger.debug(this + ".prepare(Xid=" + xid + ")");
-		}
 		return XA_OK;
 	}
 
@@ -122,9 +105,6 @@ class XAResourceRecovery implements XAResource {
 	 */
 	@Override
 	public boolean isSameRM(final XAResource xares) throws XAException {
-		if (logger.isDebugEnabled()) {
-			logger.debug(this + ".isSameRM(XAResource=" + xares + ")");
-		}
 		return false;
 	}
 
@@ -135,10 +115,8 @@ class XAResourceRecovery implements XAResource {
 	 */
 	@Override
 	public int getTransactionTimeout() throws XAException {
-		if (logger.isDebugEnabled()) {
-			logger.debug(this + ".getTransactionTimeout()");
-		}
-		return TransactionManagerServices.getConfiguration().getDefaultTransactionTimeout();
+		return TransactionManagerServices.getConfiguration()
+				.getDefaultTransactionTimeout();
 	}
 
 	/**
@@ -148,9 +126,7 @@ class XAResourceRecovery implements XAResource {
 	 */
 	@Override
 	public void forget(final Xid xid) throws XAException {
-		if (logger.isDebugEnabled()) {
-			logger.debug(this + ".forget(Xid=" + xid + ")");
-		}
+		// do nothing
 	}
 
 	/**
@@ -160,9 +136,7 @@ class XAResourceRecovery implements XAResource {
 	 */
 	@Override
 	public void end(final Xid xid, final int flags) throws XAException {
-		if (logger.isDebugEnabled()) {
-			logger.debug(this + ".end(Xid=" + xid + ", flags=" + flags + ")");
-		}
+		// do nothing
 	}
 
 	/**
@@ -172,9 +146,8 @@ class XAResourceRecovery implements XAResource {
 	 *      boolean)
 	 */
 	@Override
-	public void commit(final Xid xid, final boolean onePhase) throws XAException {
-		if (logger.isDebugEnabled()) {
-			logger.debug(this + ".commit(Xid=" + xid + ", onePhase=" + onePhase + ")");
-		}
+	public void commit(final Xid xid, final boolean onePhase)
+			throws XAException {
+		// do nothing
 	}
 }

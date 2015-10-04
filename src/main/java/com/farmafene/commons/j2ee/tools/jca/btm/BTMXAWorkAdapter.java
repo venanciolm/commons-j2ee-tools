@@ -44,7 +44,8 @@ import com.farmafene.commons.j2ee.tools.jca.wm.IXAWorkAdapter;
 
 abstract class BTMXAWorkAdapter implements IXAWorkAdapter {
 
-	private static final Logger logger = LoggerFactory.getLogger(BTMXAWorkAdapter.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(BTMXAWorkAdapter.class);
 
 	private final Map<Xid, ThreadContext> importedTransactions;
 
@@ -59,21 +60,24 @@ abstract class BTMXAWorkAdapter implements IXAWorkAdapter {
 	 *      .Xid, long)
 	 */
 	@Override
-	public void begin(final Xid xid, final long txTimeout) throws XAException, SystemException, InvalidTransactionException {
+	public void begin(final Xid xid, final long txTimeout) throws XAException,
+			SystemException, InvalidTransactionException {
 		if (null == xid) {
 			throw new InvalidTransactionException("Xid is null!");
 		}
 		final ThreadContext ctx = unbound();
 		if (null != ctx) {
-			logger.error("El thread dispone de una transcción activa!");
-			final Xid existente = (Xid) BTMLocator.getTransactionSynchronizationRegistry().getTransactionKey();
+			final Xid existente = (Xid) BTMLocator
+					.getTransactionSynchronizationRegistry()
+					.getTransactionKey();
 			this.importedTransactions.put(existente, ctx);
 		}
 		ThreadContext tc = null;
 		try {
 			tc = this.importedTransactions.get(xid);
 		} catch (final Throwable e) {
-			final RuntimeException rtm = new RuntimeException("Se ha producido un error al encontrar el XID " + xid, e);
+			final RuntimeException rtm = new RuntimeException(
+					"Se ha producido un error al encontrar el XID " + xid, e);
 			logger.error("Exception: " + e);
 			throw rtm;
 		}
@@ -85,10 +89,12 @@ abstract class BTMXAWorkAdapter implements IXAWorkAdapter {
 		bind(xid);
 	}
 
-	protected ThreadContext createThreadContext(final Xid xid) throws SystemException {
+	protected ThreadContext createThreadContext(final Xid xid)
+			throws SystemException {
 		try {
 			BTMLocator.getBitronixTransactionManager().begin();
-			final Transaction t = BTMLocator.getBitronixTransactionManager().getCurrentTransaction();
+			final Transaction t = BTMLocator.getBitronixTransactionManager()
+					.getCurrentTransaction();
 			t.registerSynchronization(new Synchronization() {
 
 				/**
@@ -134,11 +140,7 @@ abstract class BTMXAWorkAdapter implements IXAWorkAdapter {
 	 */
 	@Override
 	public void end(final Xid xid) throws XAException, SystemException {
-		final ThreadContext tc = unbound();
-		if (logger.isDebugEnabled()) {
-			logger.debug("Remote: " + xid);
-			logger.debug(" local:" + ((null == tc) ? null : tc.getTransaction()));
-		}
+		unbound();
 	}
 
 	/**
@@ -157,7 +159,8 @@ abstract class BTMXAWorkAdapter implements IXAWorkAdapter {
 	}
 
 	public ThreadContext unbound() {
-		final ThreadContext tc = BTMLocator.getContexts().remove(Thread.currentThread());
+		final ThreadContext tc = BTMLocator.getContexts().remove(
+				Thread.currentThread());
 		return tc;
 	}
 }

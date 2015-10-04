@@ -76,8 +76,9 @@ public class DefaultResourceAdapterContainer implements InitializingBean,
 			version = aPackage.getImplementationVersion();
 		}
 
-		logger.info("farmafene.com JCA Container (http://www.farmafene.com/) has started running version: "
-				+ version);
+		logger.info(
+				"farmafene.com JCA Container (http://www.farmafene.com/) has started running version: {}",
+				version);
 	}
 
 	/**
@@ -102,7 +103,8 @@ public class DefaultResourceAdapterContainer implements InitializingBean,
 	}
 
 	/**
-	 * @param bootstrapContext the bootstrapContext to set
+	 * @param bootstrapContext
+	 *            the bootstrapContext to set
 	 */
 	public void setBootstrapContext(BootstrapContext bootstrapContext) {
 		this.bootstrapContext = bootstrapContext;
@@ -116,7 +118,8 @@ public class DefaultResourceAdapterContainer implements InitializingBean,
 	}
 
 	/**
-	 * @param resourceAdapter the resourceAdapter to set
+	 * @param resourceAdapter
+	 *            the resourceAdapter to set
 	 */
 	public void setResourceAdapter(ResourceAdapter resourceAdapter) {
 		this.resourceAdapter = resourceAdapter;
