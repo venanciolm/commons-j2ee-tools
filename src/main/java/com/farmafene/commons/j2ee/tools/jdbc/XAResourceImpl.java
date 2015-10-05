@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2009-2011 farmafene.com
+ * Copyright (c) 2009-2015 farmafene.com
  * All rights reserved.
- * 
+ *
  * Permission is hereby granted, free  of charge, to any person obtaining
  * a  copy  of this  software  and  associated  documentation files  (the
  * "Software"), to  deal in  the Software without  restriction, including
@@ -9,10 +9,10 @@
  * distribute,  sublicense, and/or sell  copies of  the Software,  and to
  * permit persons to whom the Software  is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The  above  copyright  notice  and  this permission  notice  shall  be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE  SOFTWARE IS  PROVIDED  "AS  IS", WITHOUT  WARRANTY  OF ANY  KIND,
  * EXPRESS OR  IMPLIED, INCLUDING  BUT NOT LIMITED  TO THE  WARRANTIES OF
  * MERCHANTABILITY,    FITNESS    FOR    A   PARTICULAR    PURPOSE    AND
@@ -35,7 +35,7 @@ import javax.transaction.xa.Xid;
  * <p>
  * El flujo del protocolo XA implementa esta máquina de estados:
  * </p>
- * 
+ *
  * <pre>
  * NO_TX
  *   |
@@ -65,7 +65,7 @@ public class XAResourceImpl implements XAResource {
 	public static final int STARTED = 1;
 	public static final int ENDED = 2;
 	public static final int PREPARED = 3;
-	private Connection connection;
+	private final Connection connection;
 	private Xid xid;
 	private boolean autocommitActiveBeforeStart;
 	private int state = NO_TX;
@@ -73,122 +73,110 @@ public class XAResourceImpl implements XAResource {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param connection
-	 *            conexión a controlar
+	 *
+	 * @param connection conexión a controlar
 	 */
-	public XAResourceImpl(Connection connection) {
+	public XAResourceImpl(final Connection connection) {
 		this.connection = connection;
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see XAResource#forget(Xid)
 	 */
-	public void forget(Xid xid) throws XAException {
+	@Override
+	public void forget(final Xid xid) throws XAException {
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see XAResource#recover(int)
 	 */
-	public Xid[] recover(int flags) throws XAException {
+	@Override
+	public Xid[] recover(final int flags) throws XAException {
 		return new Xid[0];
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see XAResource#isSameRM(XAResource)
 	 */
-	public boolean isSameRM(XAResource xaResource) throws XAException {
+	@Override
+	public boolean isSameRM(final XAResource xaResource) throws XAException {
 		return xaResource == this;
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see XAResource#start(Xid, int)
 	 */
-	public void start(Xid xid, int flag) throws XAException {
+	@Override
+	public void start(final Xid xid, final int flag) throws XAException {
 		if (xid == null) {
-			XAErrorsException e = new XAErrorsException(
-					"XID no puede ser nulo", XAException.XAER_INVAL);
+			final XAErrorsException e = new XAErrorsException("XID no puede ser nulo", XAException.XAER_INVAL);
 			throw e;
 		}
 
-		if (state == NO_TX) {
+		if (this.state == NO_TX) {
 			if (this.xid != null) {
-				XAErrorsException e = new XAErrorsException(
-						"Recurso ya iniciado con XID " + this.xid,
-						XAException.XAER_PROTO);
+				final XAErrorsException e = new XAErrorsException("Recurso ya iniciado con XID " + this.xid, XAException.XAER_PROTO);
 				throw e;
 			}
 			if (flag == XAResource.TMJOIN) {
-				XAErrorsException e = new XAErrorsException(
-						"Recurso a�n no arrancado", XAException.XAER_PROTO);
+				final XAErrorsException e = new XAErrorsException("Recurso aún no arrancado", XAException.XAER_PROTO);
 				throw e;
 			}
 			this.xid = xid;
-		} else if (state == STARTED) {
-			XAErrorsException e = new XAErrorsException(
-					"Recurso ya arrancado con XID " + this.xid,
-					XAException.XAER_PROTO);
+		} else if (this.state == STARTED) {
+			final XAErrorsException e = new XAErrorsException("Recurso ya arrancado con XID " + this.xid, XAException.XAER_PROTO);
 			throw e;
-		} else if (state == ENDED) {
+		} else if (this.state == ENDED) {
 			if (flag == XAResource.TMNOFLAGS) {
-				XAErrorsException e = new XAErrorsException(
-						"Recurso ya registrado con XID " + this.xid,
-						XAException.XAER_DUPID);
+				final XAErrorsException e = new XAErrorsException("Recurso ya registrado con XID " + this.xid, XAException.XAER_DUPID);
 				throw e;
 			}
 			if (!xid.equals(this.xid)) {
-				XAErrorsException e = new XAErrorsException(
-						"Recurso ya arrancado con XID "
-								+ this.xid
-								+ " - no se pueden arrancar más de un XID al mismo tiempo",
-						XAException.XAER_RMERR);
+				final XAErrorsException e = new XAErrorsException("Recurso ya arrancado con XID " + this.xid
+						+ " - no se pueden arrancar más de un XID al mismo tiempo", XAException.XAER_RMERR);
 				throw e;
 			}
 		}
 		try {
-			autocommitActiveBeforeStart = connection.getAutoCommit();
-			if (autocommitActiveBeforeStart) {
-				connection.setAutoCommit(false);
+			this.autocommitActiveBeforeStart = this.connection.getAutoCommit();
+			if (this.autocommitActiveBeforeStart) {
+				this.connection.setAutoCommit(false);
 			}
 			this.state = STARTED;
-		} catch (SQLException ex) {
-			XAErrorsException e = new XAErrorsException(
-					"No se puede deshabilitar autocommit en connection no-XA ",
-					XAException.XAER_RMERR);
+		} catch (final SQLException ex) {
+			final XAErrorsException e = new XAErrorsException("No se puede deshabilitar autocommit en connection no-XA ", XAException.XAER_RMERR);
 			throw e;
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see XAResource#end(Xid, int)
 	 */
-	public void end(Xid xid, int flag) throws XAException {
+	@Override
+	public void end(final Xid xid, final int flag) throws XAException {
 		if (xid == null) {
-			XAErrorsException e = new XAErrorsException(
-					"XID no puede ser nulo", XAException.XAER_INVAL);
+			final XAErrorsException e = new XAErrorsException("XID no puede ser nulo", XAException.XAER_INVAL);
 			throw e;
 
 		}
 		if (flag == XAResource.TMFAIL) {
 			try {
-				connection.rollback();
-				state = NO_TX;
+				this.connection.rollback();
+				this.state = NO_TX;
 				this.xid = null;
 				return;
-			} catch (SQLException ex) {
-				XAErrorsException e = new XAErrorsException(
-						"Error en rollback del recurso al terminar",
-						XAException.XAER_RMERR, ex);
+			} catch (final SQLException ex) {
+				final XAErrorsException e = new XAErrorsException("Error en rollback del recurso al terminar", XAException.XAER_RMERR, ex);
 				throw e;
 			}
 		}
@@ -197,13 +185,13 @@ public class XAResourceImpl implements XAResource {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see XAResource#prepare(Xid)
 	 */
-	public int prepare(Xid xid) throws XAException {
+	@Override
+	public int prepare(final Xid xid) throws XAException {
 		if (xid == null) {
-			XAErrorsException e = new XAErrorsException(
-					"XID no puede ser nulo", XAException.XAER_INVAL);
+			final XAErrorsException e = new XAErrorsException("XID no puede ser nulo", XAException.XAER_INVAL);
 			throw e;
 		}
 
@@ -213,20 +201,19 @@ public class XAResourceImpl implements XAResource {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see XAResource#commit(Xid, boolean)
 	 */
-	public void commit(Xid xid, boolean onePhase) throws XAException {
+	@Override
+	public void commit(final Xid xid, final boolean onePhase) throws XAException {
 		if (xid == null) {
-			XAErrorsException e = new XAErrorsException(
-					"XID no puede ser nulo", XAException.XAER_INVAL);
+			final XAErrorsException e = new XAErrorsException("XID no puede ser nulo", XAException.XAER_INVAL);
 			throw e;
 		}
 		try {
-			connection.commit();
-		} catch (SQLException ex) {
-			XAErrorsException e = new XAErrorsException("Error en el commit",
-					XAException.XAER_RMERR, ex);
+			this.connection.commit();
+		} catch (final SQLException ex) {
+			final XAErrorsException e = new XAErrorsException("Error en el commit", XAException.XAER_RMERR, ex);
 			throw e;
 		}
 
@@ -234,76 +221,69 @@ public class XAResourceImpl implements XAResource {
 		this.xid = null;
 
 		try {
-			if (autocommitActiveBeforeStart) {
-				connection.setAutoCommit(true);
+			if (this.autocommitActiveBeforeStart) {
+				this.connection.setAutoCommit(true);
 			}
-		} catch (SQLException ex) {
-			XAErrorsException e = new XAErrorsException(
-					"no se puede establecer autocommit en la connection no-XA",
-					XAException.XAER_RMERR);
+		} catch (final SQLException ex) {
+			final XAErrorsException e = new XAErrorsException("no se puede establecer autocommit en la connection no-XA", XAException.XAER_RMERR);
 			throw e;
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see XAResource#rollback(Xid)
 	 */
-	public void rollback(Xid xid) throws XAException {
+	@Override
+	public void rollback(final Xid xid) throws XAException {
 		if (xid == null) {
-			XAErrorsException e = new XAErrorsException(
-					"XID no puede ser nulo", XAException.XAER_INVAL);
+			final XAErrorsException e = new XAErrorsException("XID no puede ser nulo", XAException.XAER_INVAL);
 			throw e;
 		}
 
 		try {
-			connection.rollback();
+			this.connection.rollback();
 			this.state = NO_TX;
 			this.xid = null;
-		} catch (SQLException ex) {
-			XAErrorsException e = new XAErrorsException(
-					"Error en el prepare del recurso  no-XA",
-					XAException.XAER_RMERR, ex);
+		} catch (final SQLException ex) {
+			final XAErrorsException e = new XAErrorsException("Error en el prepare del recurso  no-XA", XAException.XAER_RMERR, ex);
 			throw e;
 		}
 
 		try {
-			if (autocommitActiveBeforeStart) {
-				connection.setAutoCommit(true);
+			if (this.autocommitActiveBeforeStart) {
+				this.connection.setAutoCommit(true);
 			}
-		} catch (SQLException ex) {
-			XAErrorsException e = new XAErrorsException(
-					"no se puede establecer autocommit en la connection no-XA",
-					XAException.XAER_RMERR);
+		} catch (final SQLException ex) {
+			final XAErrorsException e = new XAErrorsException("no se puede establecer autocommit en la connection no-XA", XAException.XAER_RMERR);
 			throw e;
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append(getClass().getSimpleName());
 		sb.append("={");
 		sb.append("state=").append(pintaEstado());
-		sb.append(", txTimeout=").append(txTimeout);
+		sb.append(", txTimeout=").append(this.txTimeout);
 		sb.append("}");
 		return sb.toString();
 	}
 
 	/**
 	 * Obtiene el descriptivo de un flag de XAResource
-	 * 
-	 * @param flag
-	 *            el flag
+	 *
+	 * @param flag el flag
 	 * @return descriptivo del flag
 	 */
-	protected String decodeXAResourceFlag(int flag) {
+	protected String decodeXAResourceFlag(final int flag) {
 		switch (flag) {
 		case XAResource.TMENDRSCAN:
 			return "ENDRSCAN";
@@ -324,17 +304,17 @@ public class XAResourceImpl implements XAResource {
 		case XAResource.TMSUSPEND:
 			return "SUSPEND";
 		default:
-			return "�flag invalido(" + flag + ")!";
+			return "¡flag invalido(" + flag + ")!";
 		}
 	}
 
 	/**
 	 * Obtiene el string con el estado del Recurso
-	 * 
+	 *
 	 * @return descriptivo del estado del recurso
 	 */
 	private String pintaEstado() {
-		switch (state) {
+		switch (this.state) {
 		case NO_TX:
 			return "NO_TX";
 		case STARTED:
@@ -344,25 +324,27 @@ public class XAResourceImpl implements XAResource {
 		case PREPARED:
 			return "PREPARED";
 		default:
-			return "!estado invalido (" + state + ")!";
+			return "!estado invalido (" + this.state + ")!";
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see XAResource#getTransactionTimeout()
 	 */
+	@Override
 	public int getTransactionTimeout() throws XAException {
-		return txTimeout;
+		return this.txTimeout;
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see XAResource#setTransactionTimeout(int)
 	 */
-	public boolean setTransactionTimeout(int seconds) throws XAException {
+	@Override
+	public boolean setTransactionTimeout(final int seconds) throws XAException {
 		this.txTimeout = seconds;
 		return true;
 	}

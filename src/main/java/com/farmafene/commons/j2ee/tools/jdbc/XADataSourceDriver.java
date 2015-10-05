@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2011 farmafene.com
+ * Copyright (c) 2009-2015 farmafene.com
  * All rights reserved.
  *
  * Permission is hereby granted, free  of charge, to any person obtaining

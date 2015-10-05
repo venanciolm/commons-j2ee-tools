@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2009-2011 farmafene.com
+ * Copyright (c) 2009-2015 farmafene.com
  * All rights reserved.
- * 
+ *
  * Permission is hereby granted, free  of charge, to any person obtaining
  * a  copy  of this  software  and  associated  documentation files  (the
  * "Software"), to  deal in  the Software without  restriction, including
@@ -9,10 +9,10 @@
  * distribute,  sublicense, and/or sell  copies of  the Software,  and to
  * permit persons to whom the Software  is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The  above  copyright  notice  and  this permission  notice  shall  be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE  SOFTWARE IS  PROVIDED  "AS  IS", WITHOUT  WARRANTY  OF ANY  KIND,
  * EXPRESS OR  IMPLIED, INCLUDING  BUT NOT LIMITED  TO THE  WARRANTIES OF
  * MERCHANTABILITY,    FITNESS    FOR    A   PARTICULAR    PURPOSE    AND
@@ -39,28 +39,27 @@ import javax.transaction.xa.XAResource;
  */
 public class Connection2XAConnection implements XAConnection {
 
-	private Connection connection;
+	private final Connection connection;
 
-	private XAResourceImpl xaResource;
+	private final XAResourceImpl xaResource;
 
-	private List<ConnectionEventListener> connectionEventListeners = new LinkedList<ConnectionEventListener>();
+	private final List<ConnectionEventListener> connectionEventListeners = new LinkedList<ConnectionEventListener>();
 
-	private List<StatementEventListener> statementEventListeners = new LinkedList<StatementEventListener>();
+	private final List<StatementEventListener> statementEventListeners = new LinkedList<StatementEventListener>();
 
 	/**
 	 * Constructor
-	 * 
-	 * @param connection
-	 *            conexión a realizar el Mock
+	 *
+	 * @param connection conexión a realizar el Mock
 	 */
-	public Connection2XAConnection(Connection connection) {
+	public Connection2XAConnection(final Connection connection) {
 		this.connection = connection;
 		this.xaResource = new XAResourceImpl(connection);
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see Object#hashCode()
 	 */
 	@Override
@@ -70,89 +69,93 @@ public class Connection2XAConnection implements XAConnection {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append(getClass().getSimpleName());
 		sb.append("={");
-		sb.append("connection=").append(connection);
+		sb.append("connection=").append(this.connection);
 		sb.append("}");
 		return sb.toString();
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see Object#equals(Object)
 	 */
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		boolean equals = false;
 		if (obj instanceof Connection2XAConnection) {
-			equals = this.connection
-					.equals(((Connection2XAConnection) obj).connection);
+			equals = this.connection.equals(((Connection2XAConnection) obj).connection);
 		}
 		return equals;
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see javax.sql.XAConnection#getXAResource()
 	 */
+	@Override
 	public XAResource getXAResource() throws SQLException {
-		return xaResource;
+		return this.xaResource;
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see javax.sql.PooledConnection#addConnectionEventListener(javax.sql.ConnectionEventListener)
 	 */
-	public void addConnectionEventListener(ConnectionEventListener listener) {
-		connectionEventListeners.add(listener);
+	@Override
+	public void addConnectionEventListener(final ConnectionEventListener listener) {
+		this.connectionEventListeners.add(listener);
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see javax.sql.PooledConnection#close()
 	 */
+	@Override
 	public void close() throws SQLException {
-		connection.close();
-		for (ConnectionEventListener connectionEventListener : connectionEventListeners) {
+		this.connection.close();
+		for (final ConnectionEventListener connectionEventListener : this.connectionEventListeners) {
 			connectionEventListener.connectionClosed(new ConnectionEvent(this));
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see javax.sql.PooledConnection#getConnection()
 	 */
+	@Override
 	public Connection getConnection() throws SQLException {
-		return connection;
+		return this.connection;
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see javax.sql.PooledConnection#removeConnectionEventListener(javax.sql.ConnectionEventListener)
 	 */
-	public void removeConnectionEventListener(ConnectionEventListener listener) {
-		connectionEventListeners.remove(listener);
+	@Override
+	public void removeConnectionEventListener(final ConnectionEventListener listener) {
+		this.connectionEventListeners.remove(listener);
 	}
 
-	public void addStatementEventListener(
-			StatementEventListener statementeventlistener) {
-		statementEventListeners.add(statementeventlistener);
+	@Override
+	public void addStatementEventListener(final StatementEventListener statementeventlistener) {
+		this.statementEventListeners.add(statementeventlistener);
 	}
 
-	public void removeStatementEventListener(
-			StatementEventListener statementeventlistener) {
-		statementEventListeners.remove(statementeventlistener);
+	@Override
+	public void removeStatementEventListener(final StatementEventListener statementeventlistener) {
+		this.statementEventListeners.remove(statementeventlistener);
 	}
 }
