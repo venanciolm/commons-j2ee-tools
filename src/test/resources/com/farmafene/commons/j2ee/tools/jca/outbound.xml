@@ -33,7 +33,7 @@
 
 	<bean id="managedConnectionFactory1" class="org.tranql.connector.jdbc.XADataSourceWrapper">
 		<constructor-arg>
-			<bean class="bitronix.tm.resource.jdbc.lrc.LrcXADataSource">
+			<bean class="com.farmafene.commons.j2ee.tools.jdbc.XADataSourceDriver">
 				<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
 				<property name="url" value="jdbc:hsqldb:mem:m01" />
 				<property name="user" value="sa" />
@@ -45,7 +45,7 @@
 	</bean>
 	<bean id="managedConnectionFactory2" class="org.tranql.connector.jdbc.XADataSourceWrapper">
 		<constructor-arg>
-			<bean class="bitronix.tm.resource.jdbc.lrc.LrcXADataSource">
+			<bean class="com.farmafene.commons.j2ee.tools.jdbc.XADataSourceDriver">
 				<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
 				<property name="url" value="jdbc:hsqldb:mem:m02" />
 				<property name="user" value="sa" />

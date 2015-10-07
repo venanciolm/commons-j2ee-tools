@@ -33,9 +33,21 @@ import javax.sql.PooledConnection;
 import javax.sql.XAConnection;
 import javax.sql.XADataSource;
 
-public class XADatasourced4ConnectionPoolDataSource implements XADataSource {
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.Assert;
 
-	private ConnectionPoolDataSource inner;
+public class XADatasourced4ConnectionPoolDataSourceDecorator implements XADataSource, InitializingBean {
+
+	private ConnectionPoolDataSource connectionPoolDataSource;
+
+	/**
+	 * {@inheritDoc}
+	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+	 */
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		Assert.notNull(this.connectionPoolDataSource, "connectionPoolDataSource is not set!");
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -44,7 +56,7 @@ public class XADatasourced4ConnectionPoolDataSource implements XADataSource {
 	 */
 	@Override
 	public XAConnection getXAConnection() throws SQLException {
-		final PooledConnection pconn = this.inner.getPooledConnection();
+		final PooledConnection pconn = this.connectionPoolDataSource.getPooledConnection();
 		final XAConnection xaConn = new XAConnection4PooledConnection(pconn);
 		return xaConn;
 	}
@@ -57,7 +69,7 @@ public class XADatasourced4ConnectionPoolDataSource implements XADataSource {
 	 */
 	@Override
 	public XAConnection getXAConnection(final String user, final String password) throws SQLException {
-		final PooledConnection pconn = this.inner.getPooledConnection(user, password);
+		final PooledConnection pconn = this.connectionPoolDataSource.getPooledConnection(user, password);
 		final XAConnection xaConn = new XAConnection4PooledConnection(pconn);
 		return xaConn;
 	}
@@ -72,47 +84,60 @@ public class XADatasourced4ConnectionPoolDataSource implements XADataSource {
 		throw new SQLFeatureNotSupportedException("Not supproted");
 	}
 
-	/*
+	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see javax.sql.CommonDataSource#getLogWriter()
 	 */
 	@Override
 	public PrintWriter getLogWriter() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		return this.connectionPoolDataSource.getLogWriter();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
+	 * {@inheritDoc}
+	 *
 	 * @see javax.sql.CommonDataSource#setLogWriter(java.io.PrintWriter)
 	 */
 	@Override
 	public void setLogWriter(final PrintWriter out) throws SQLException {
-		// TODO Auto-generated method stub
-
+		this.connectionPoolDataSource.setLogWriter(out);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
+	 * {@inheritDoc}
+	 *
 	 * @see javax.sql.CommonDataSource#setLoginTimeout(int)
 	 */
 	@Override
 	public void setLoginTimeout(final int seconds) throws SQLException {
-		// TODO Auto-generated method stub
-
+		this.connectionPoolDataSource.setLoginTimeout(seconds);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
+	 * {@inheritDoc}
+	 *
 	 * @see javax.sql.CommonDataSource#getLoginTimeout()
 	 */
 	@Override
 	public int getLoginTimeout() throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.connectionPoolDataSource.getLoginTimeout();
+	}
+
+	/**
+	 * Devuelve el valor de la propiedad 'connectionPoolDataSource'
+	 * @return Propiedad connectionPoolDataSource
+	 */
+	public ConnectionPoolDataSource getConnectionPoolDataSource() {
+		return this.connectionPoolDataSource;
+	}
+
+	/**
+	 * Asigna el valor de la propiedad 'connectionPoolDataSource'
+	 * @param connectionPoolDataSource valor que se le quiere dar a la propiedad
+	 *            'connectionPoolDataSource'
+	 */
+	public void setConnectionPoolDataSource(final ConnectionPoolDataSource connectionPoolDataSource) {
+		this.connectionPoolDataSource = connectionPoolDataSource;
 	}
 }

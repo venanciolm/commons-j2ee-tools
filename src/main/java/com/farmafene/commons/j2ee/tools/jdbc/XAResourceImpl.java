@@ -30,6 +30,11 @@ import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.farmafene.commons.j2ee.tools.jca.common.StringPrintStream;
+
 /**
  * Implementación de XAResource para no-XA JDBC connection emulando XA
  * <p>
@@ -58,9 +63,11 @@ import javax.transaction.xa.Xid;
  *   |       rollback()
  * PREPARED ------------- NO_TX
  * </pre>
+ * @see bitronix.tm.resource.jdbc.lrc.LrcXADataSource
  */
 public class XAResourceImpl implements XAResource {
 
+	private static final Logger logger = LoggerFactory.getLogger(XAResourceImpl.class);
 	public static final int NO_TX = 0;
 	public static final int STARTED = 1;
 	public static final int ENDED = 2;
@@ -87,6 +94,16 @@ public class XAResourceImpl implements XAResource {
 	 */
 	@Override
 	public void forget(final Xid xid) throws XAException {
+		if (logger.isDebugEnabled()) {
+			final StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("/*--------------------------------------------------+\\");
+			ps.println("|| Forget:                                           ||");
+			ps.print("|| Xid: ");
+			ps.println(xid);
+			ps.print("\\+--------------------------------------------------*/");
+			logger.debug("{}", ps);
+		}
 	}
 
 	/**
@@ -96,6 +113,16 @@ public class XAResourceImpl implements XAResource {
 	 */
 	@Override
 	public Xid[] recover(final int flags) throws XAException {
+		if (logger.isDebugEnabled()) {
+			final StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("/*--------------------------------------------------+\\");
+			ps.println("|| Recover:                                          ||");
+			ps.print("|| Flag: ");
+			ps.println(flags);
+			ps.print("\\+--------------------------------------------------*/");
+			logger.info("{}", ps);
+		}
 		return new Xid[0];
 	}
 
@@ -116,6 +143,18 @@ public class XAResourceImpl implements XAResource {
 	 */
 	@Override
 	public void start(final Xid xid, final int flag) throws XAException {
+		if (logger.isDebugEnabled()) {
+			final StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("/*--------------------------------------------------+\\");
+			ps.println("|| Start:                                            ||");
+			ps.print("|| Flags: ");
+			ps.println(flag);
+			ps.print("|| Xid: ");
+			ps.println(xid);
+			ps.print("\\+--------------------------------------------------*/");
+			logger.debug("{}", ps);
+		}
 		if (xid == null) {
 			final XAErrorsException e = new XAErrorsException("XID no puede ser nulo", XAException.XAER_INVAL);
 			throw e;
@@ -164,6 +203,18 @@ public class XAResourceImpl implements XAResource {
 	 */
 	@Override
 	public void end(final Xid xid, final int flag) throws XAException {
+		if (logger.isDebugEnabled()) {
+			final StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("/*--------------------------------------------------+\\");
+			ps.println("|| End:                                             ||");
+			ps.print("|| Flags: ");
+			ps.println(flag);
+			ps.print("|| Xid: ");
+			ps.println(xid);
+			ps.print("\\+--------------------------------------------------*/");
+			logger.debug("{}", ps);
+		}
 		if (xid == null) {
 			final XAErrorsException e = new XAErrorsException("XID no puede ser nulo", XAException.XAER_INVAL);
 			throw e;
@@ -190,6 +241,17 @@ public class XAResourceImpl implements XAResource {
 	 */
 	@Override
 	public int prepare(final Xid xid) throws XAException {
+		if (logger.isDebugEnabled()) {
+			final StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("/*--------------------------------------------------+\\");
+			ps.println("|| Prepare:                                          ||");
+			ps.print("|| Xid: ");
+			ps.println(xid);
+			ps.print("\\+--------------------------------------------------*/");
+			logger.debug("{}", ps);
+		}
+
 		if (xid == null) {
 			final XAErrorsException e = new XAErrorsException("XID no puede ser nulo", XAException.XAER_INVAL);
 			throw e;
@@ -206,6 +268,18 @@ public class XAResourceImpl implements XAResource {
 	 */
 	@Override
 	public void commit(final Xid xid, final boolean onePhase) throws XAException {
+		if (logger.isDebugEnabled()) {
+			final StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("/*--------------------------------------------------+\\");
+			ps.println("|| Commit:                                           ||");
+			ps.print("|| OnePhase: ");
+			ps.println(onePhase);
+			ps.print("|| Xid: ");
+			ps.println(xid);
+			ps.print("\\+--------------------------------------------------*/");
+			logger.debug("{}", ps);
+		}
 		if (xid == null) {
 			final XAErrorsException e = new XAErrorsException("XID no puede ser nulo", XAException.XAER_INVAL);
 			throw e;
@@ -237,6 +311,16 @@ public class XAResourceImpl implements XAResource {
 	 */
 	@Override
 	public void rollback(final Xid xid) throws XAException {
+		if (logger.isDebugEnabled()) {
+			final StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("/*--------------------------------------------------+\\");
+			ps.println("|| Rollback:                                         ||");
+			ps.print("|| Xid: ");
+			ps.println(xid);
+			ps.print("\\+--------------------------------------------------*/");
+			logger.debug("{}", ps);
+		}
 		if (xid == null) {
 			final XAErrorsException e = new XAErrorsException("XID no puede ser nulo", XAException.XAER_INVAL);
 			throw e;

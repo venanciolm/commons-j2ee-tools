@@ -40,9 +40,8 @@ import javax.sql.XADataSource;
  */
 public class XADataSourceDriver implements XADataSource {
 
-	private int loginTimeout;
-	private String driver;
-	private String auriusResourceName;
+	private int loginTimeout = 20;
+	private String driverClassName;
 	private String url;
 	private String user;
 	private String password;
@@ -56,99 +55,17 @@ public class XADataSourceDriver implements XADataSource {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @see XADataSource#getLoginTimeout()
+	 * @see Object#toString()
 	 */
 	@Override
-	public int getLoginTimeout() throws SQLException {
-		return this.loginTimeout;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @see XADataSource#setLoginTimeout(int)
-	 */
-	@Override
-	public void setLoginTimeout(final int seconds) throws SQLException {
-		this.loginTimeout = seconds;
-	}
-
-	/**
-	 * Obtiene la clase configurada como driver
-	 *
-	 * @return clase del driver
-	 */
-	public String getDriver() {
-		return this.driver;
-	}
-
-	/**
-	 * Establece el driver y lo registra
-	 *
-	 * @param driverClassName clase del driver
-	 * @throws ClassNotFoundException no se encuenta la clase
-	 * @throws IllegalAccessException no se puede acceder al método constructor
-	 * @throws InstantiationException no se puede instanciar la clase
-	 * @throws SQLException error al registrar el driver
-	 */
-	public void setDriver(final String driverClassName) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException {
-		this.driver = driverClassName;
-		final Class<?> driverClazz = loadClass(driverClassName);
-		DriverManager.registerDriver((Driver) driverClazz.newInstance());
-	}
-
-	/**
-	 * Obtiene la url de conexión para el driver
-	 *
-	 * @return la url de conexión
-	 */
-	public String getUrl() {
-		return this.url;
-	}
-
-	/**
-	 * Establece la URL de conexión para el driver.
-	 *
-	 * @param url la url de conexión
-	 */
-	public void setUrl(final String url) {
-		this.url = url;
-	}
-
-	/**
-	 * Obtiene el usuario del driver
-	 *
-	 * @return el usuario
-	 */
-	public String getUser() {
-		return this.user;
-	}
-
-	/**
-	 * Establece el usuario para el driver
-	 *
-	 * @param user el usuario
-	 */
-	public void setUser(final String user) {
-		this.user = user;
-	}
-
-	/**
-	 * Obtiene la password para el driver
-	 *
-	 * @return la password
-	 */
-	public String getPassword() {
-		return this.password;
-	}
-
-	/**
-	 * Establece la password al driver
-	 *
-	 * @param password
-	 */
-	public void setPassword(final String password) {
-		this.password = password;
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append(getClass().getSimpleName());
+		sb.append("={");
+		sb.append("url=").append(this.url);
+		sb.append(", driverClassName=").append(this.driverClassName);
+		sb.append("}");
+		return sb.toString();
 	}
 
 	/**
@@ -205,31 +122,8 @@ public class XADataSourceDriver implements XADataSource {
 			final XAConnection xaCon = new Connection2XAConnection(connection);
 			return xaCon;
 		} catch (final Exception ex) {
-			throw (SQLException) new SQLException("Imposible conectar al recurso no-XA " + this.driver).initCause(ex);
+			throw (SQLException) new SQLException("Imposible conectar al recurso no-XA " + this.driverClassName).initCause(ex);
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @see Object#toString()
-	 */
-	@Override
-	public String toString() {
-		final StringBuilder sb = new StringBuilder();
-		sb.append(getClass().getSimpleName());
-		sb.append("={");
-		sb.append("url=").append(this.url);
-		sb.append(", driver=").append(this.driver);
-		sb.append("}");
-		return sb.toString();
-	}
-
-	/**
-	 * @return the jdbcResource
-	 */
-	public String getAuriusResourceName() {
-		return this.auriusResourceName;
 	}
 
 	private Class<?> loadClass(final String className) throws ClassNotFoundException {
@@ -251,6 +145,105 @@ public class XADataSourceDriver implements XADataSource {
 	 */
 	@Override
 	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-		throw new SQLFeatureNotSupportedException("Not supproted");
+		throw new SQLFeatureNotSupportedException("Not supported!");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @see XADataSource#getLoginTimeout()
+	 */
+	@Override
+	public int getLoginTimeout() throws SQLException {
+		return this.loginTimeout;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @see XADataSource#setLoginTimeout(int)
+	 */
+	@Override
+	public void setLoginTimeout(final int seconds) throws SQLException {
+		this.loginTimeout = seconds;
+	}
+
+	/**
+	 * Obtiene la clase configurada como driver
+	 *
+	 * @return clase del driver
+	 */
+	public String getDriverClassName() {
+		return this.driverClassName;
+	}
+
+	/**
+	 * Establece el driver y lo registra
+	 *
+	 * @param driverClassName clase del driver
+	 * @throws ClassNotFoundException no se encuenta la clase
+	 * @throws IllegalAccessException no se puede acceder al método constructor
+	 * @throws InstantiationException no se puede instanciar la clase
+	 * @throws SQLException error al registrar el driver
+	 */
+	public void setDriverClassName(final String driverClassName) throws ClassNotFoundException, IllegalAccessException, InstantiationException,
+			SQLException {
+		this.driverClassName = driverClassName;
+		final Class<?> driverClazz = loadClass(driverClassName);
+		DriverManager.registerDriver((Driver) driverClazz.newInstance());
+	}
+
+	/**
+	 * Obtiene la url de conexión para el driver
+	 *
+	 * @return la url de conexión
+	 */
+	public String getUrl() {
+		return this.url;
+	}
+
+	/**
+	 * Establece la URL de conexión para el driver.
+	 *
+	 * @param url la url de conexión
+	 */
+	public void setUrl(final String url) {
+		this.url = url;
+	}
+
+	/**
+	 * Obtiene el usuario del driver
+	 *
+	 * @return el usuario
+	 */
+	public String getUser() {
+		return this.user;
+	}
+
+	/**
+	 * Establece el usuario para el driver
+	 *
+	 * @param user el usuario
+	 */
+	public void setUser(final String user) {
+		this.user = user;
+	}
+
+	/**
+	 * Obtiene la password para el driver
+	 *
+	 * @return la password
+	 */
+	public String getPassword() {
+		return this.password;
+	}
+
+	/**
+	 * Establece la password al driver
+	 *
+	 * @param password
+	 */
+	public void setPassword(final String password) {
+		this.password = password;
 	}
 }

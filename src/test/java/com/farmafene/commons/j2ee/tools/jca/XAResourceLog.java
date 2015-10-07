@@ -36,8 +36,7 @@ import com.farmafene.commons.j2ee.tools.jca.common.StringPrintStream;
 
 public class XAResourceLog implements XAResource {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(XAResourceLog.class);
+	private static final Logger logger = LoggerFactory.getLogger(XAResourceLog.class);
 	private final UUID uuid;
 	private int transactionTimeout = 120;
 
@@ -54,8 +53,7 @@ public class XAResourceLog implements XAResource {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((this.uuid == null) ? 0 : this.uuid.hashCode());
+		result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
 		return result;
 	}
 
@@ -108,10 +106,9 @@ public class XAResourceLog implements XAResource {
 	 *      boolean)
 	 */
 	@Override
-	public void commit(final Xid xid, final boolean onePhase)
-			throws XAException {
+	public void commit(final Xid xid, final boolean onePhase) throws XAException {
 		if (logger.isInfoEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
+			final StringPrintStream ps = new StringPrintStream();
 			ps.println();
 			ps.println("/*--------------------------------------------------+\\");
 			ps.println("|| Commit:                                           ||");
@@ -132,7 +129,7 @@ public class XAResourceLog implements XAResource {
 	@Override
 	public void end(final Xid xid, final int flags) throws XAException {
 		if (logger.isInfoEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
+			final StringPrintStream ps = new StringPrintStream();
 			ps.println();
 			ps.println("/*--------------------------------------------------+\\");
 			ps.println("|| End:                                             ||");
@@ -153,7 +150,7 @@ public class XAResourceLog implements XAResource {
 	@Override
 	public void forget(final Xid xid) throws XAException {
 		if (logger.isInfoEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
+			final StringPrintStream ps = new StringPrintStream();
 			ps.println();
 			ps.println("/*--------------------------------------------------+\\");
 			ps.println("|| Forget:                                           ||");
@@ -194,7 +191,7 @@ public class XAResourceLog implements XAResource {
 	@Override
 	public int prepare(final Xid xid) throws XAException {
 		if (logger.isInfoEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
+			final StringPrintStream ps = new StringPrintStream();
 			ps.println();
 			ps.println("/*--------------------------------------------------+\\");
 			ps.println("|| Prepare:                                          ||");
@@ -214,10 +211,10 @@ public class XAResourceLog implements XAResource {
 	@Override
 	public Xid[] recover(final int flag) throws XAException {
 		if (logger.isInfoEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
+			final StringPrintStream ps = new StringPrintStream();
 			ps.println();
 			ps.println("/*--------------------------------------------------+\\");
-			ps.println("|| End:                                             ||");
+			ps.println("|| Recover:                                             ||");
 			ps.print("|| Flag: ");
 			ps.println(flag);
 			ps.print("\\+--------------------------------------------------*/");
@@ -234,7 +231,7 @@ public class XAResourceLog implements XAResource {
 	@Override
 	public void rollback(final Xid xid) throws XAException {
 		if (logger.isInfoEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
+			final StringPrintStream ps = new StringPrintStream();
 			ps.println();
 			ps.println("/*--------------------------------------------------+\\");
 			ps.println("|| Rollback:                                         ||");
@@ -265,7 +262,7 @@ public class XAResourceLog implements XAResource {
 	@Override
 	public void start(final Xid xid, final int flags) throws XAException {
 		if (logger.isInfoEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
+			final StringPrintStream ps = new StringPrintStream();
 			ps.println();
 			ps.println("/*--------------------------------------------------+\\");
 			ps.println("|| Start:                                            ||");

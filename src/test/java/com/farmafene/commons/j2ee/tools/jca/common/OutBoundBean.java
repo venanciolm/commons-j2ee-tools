@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009-2015 farmafene.com
  * All rights reserved.
- * 
+ *
  * Permission is hereby granted, free  of charge, to any person obtaining
  * a  copy  of this  software  and  associated  documentation files  (the
  * "Software"), to  deal in  the Software without  restriction, including
@@ -9,10 +9,10 @@
  * distribute,  sublicense, and/or sell  copies of  the Software,  and to
  * permit persons to whom the Software  is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The  above  copyright  notice  and  this permission  notice  shall  be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE  SOFTWARE IS  PROVIDED  "AS  IS", WITHOUT  WARRANTY  OF ANY  KIND,
  * EXPRESS OR  IMPLIED, INCLUDING  BUT NOT LIMITED  TO THE  WARRANTIES OF
  * MERCHANTABILITY,    FITNESS    FOR    A   PARTICULAR    PURPOSE    AND
@@ -51,8 +51,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import bitronix.tm.utils.Decoder;
 
 public class OutBoundBean {
-	private static final Logger logger = LoggerFactory
-			.getLogger(OutBoundBean.class);
+	private static final Logger logger = LoggerFactory.getLogger(OutBoundBean.class);
 
 	private ConfigurableApplicationContext ctx;
 
@@ -105,7 +104,7 @@ public class OutBoundBean {
 				for (int i = 0; i < 2; i++) {
 					try {
 						if (logger.isDebugEnabled()) {
-							StringPrintStream out = new StringPrintStream();
+							final StringPrintStream out = new StringPrintStream();
 							out.println();
 							out.println("=============================");
 							out.println("= Comenzando la transacción =");
@@ -115,36 +114,31 @@ public class OutBoundBean {
 						}
 						UserTransaction utx = null;
 						try {
-							utx = ctx.getBean(UserTransaction.class);
-						} catch (Exception e) {
+							utx = OutBoundBean.this.ctx.getBean(UserTransaction.class);
+						} catch (final Exception e) {
 							Assert.assertNull(e);
 						}
 						utx.begin();
-						ctx.getBean(TransactionManager.class).getTransaction()
-								.registerSynchronization(new Synchronization() {
+						OutBoundBean.this.ctx.getBean(TransactionManager.class).getTransaction().registerSynchronization(new Synchronization() {
 
-									@Override
-									public void beforeCompletion() {
-										logger.info("beforeCompletion()");
-									}
+							@Override
+							public void beforeCompletion() {
+								logger.info("beforeCompletion()");
+							}
 
-									@Override
-									public void afterCompletion(int status) {
-										logger.info("afterCompletion({}): {}",
-												status,
-												Decoder.decodeStatus(status));
-									}
-								});
-						Assert.assertEquals(Status.STATUS_ACTIVE,
-								utx.getStatus());
-						logger.info("- {} [{}] ({})", i,
-								Decoder.decodeStatus(utx.getStatus()), utx);
+							@Override
+							public void afterCompletion(final int status) {
+								logger.info("afterCompletion({}): {}", status, Decoder.decodeStatus(status));
+							}
+						});
+						Assert.assertEquals(Status.STATUS_ACTIVE, utx.getStatus());
+						logger.info("- {} [{}] ({})", i, Decoder.decodeStatus(utx.getStatus()), utx);
 						DataSource ds = null;
 						Connection con = null;
 						Statement stmt = null;
 						ResultSet rs = null;
 
-						ds = (DataSource) ctx.getBean("Datasource1");
+						ds = (DataSource) OutBoundBean.this.ctx.getBean("Datasource1");
 						logger.info("-- ds:" + ds);
 						con = ds.getConnection();
 						logger.info("-- c2:" + con);
@@ -154,7 +148,7 @@ public class OutBoundBean {
 						stmt.close();
 						con.close();
 
-						ds = (DataSource) ctx.getBean("Datasource2");
+						ds = (DataSource) OutBoundBean.this.ctx.getBean("Datasource2");
 						logger.info("-- ds2:" + ds);
 						con = ds.getConnection();
 						logger.info("-- c2:" + con);
@@ -163,13 +157,12 @@ public class OutBoundBean {
 						rs.close();
 						stmt.close();
 						con.close();
-						Assert.assertEquals(Status.STATUS_ACTIVE,
-								utx.getStatus());
+						Assert.assertEquals(Status.STATUS_ACTIVE, utx.getStatus());
 						if (logger.isDebugEnabled()) {
-							StringPrintStream out = new StringPrintStream();
+							final StringPrintStream out = new StringPrintStream();
 							out.println();
 							out.println("=============================");
-							out.println(" La transacción es           ");
+							out.println(" La UserTransaction es       ");
 							out.println(utx);
 							out.print("=============================");
 							logger.info("{}", out);
@@ -177,7 +170,7 @@ public class OutBoundBean {
 						if (i % 2 == 0) {
 							utx.commit();
 							if (logger.isDebugEnabled()) {
-								StringPrintStream out = new StringPrintStream();
+								final StringPrintStream out = new StringPrintStream();
 								out.println();
 								out.println("=============================");
 								out.println("= Realizado commit          =");
@@ -187,7 +180,7 @@ public class OutBoundBean {
 						} else {
 							utx.rollback();
 							if (logger.isDebugEnabled()) {
-								StringPrintStream out = new StringPrintStream();
+								final StringPrintStream out = new StringPrintStream();
 								out.println();
 								out.println("=============================");
 								out.println("= Realizado rollback        =");
@@ -196,15 +189,14 @@ public class OutBoundBean {
 							}
 						}
 						if (logger.isDebugEnabled()) {
-							StringPrintStream out = new StringPrintStream();
+							final StringPrintStream out = new StringPrintStream();
 							out.println();
 							out.println("=============================");
 							out.println("= terminada la  transacción =");
 							out.print("=============================");
 							logger.info("{}", out);
 						}
-						logger.info("- {} [{}] ({})", i,
-								Decoder.decodeStatus(utx.getStatus()), utx);
+						logger.info("- {} [{}] ({})", i, Decoder.decodeStatus(utx.getStatus()), utx);
 					} catch (final NotSupportedException e) {
 						logger.error("", e);
 						Assert.assertNull(e);
@@ -251,14 +243,13 @@ public class OutBoundBean {
 	 * @return the ctx
 	 */
 	public ConfigurableApplicationContext getCtx() {
-		return ctx;
+		return this.ctx;
 	}
 
 	/**
-	 * @param ctx
-	 *            the ctx to set
+	 * @param ctx the ctx to set
 	 */
-	public void setCtx(ConfigurableApplicationContext ctx) {
+	public void setCtx(final ConfigurableApplicationContext ctx) {
 		this.ctx = ctx;
 	}
 }
