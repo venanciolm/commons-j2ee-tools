@@ -21,14 +21,38 @@
  * OF CONTRACT, TORT OR OTHERWISE,  ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.farmafene.commons.j2ee.tools.jdbc;
+
+import javax.transaction.xa.XAException;
+
 /**
+ * Implementación de las excepciones que produce el XAResource
  *
  */
-package com.farmafene.commons.j2ee.tools.jca.geronimo3;
+@SuppressWarnings("serial")
+public class XAErrorsException extends XAException {
 
-import java.util.concurrent.ThreadFactory;
+	/**
+	 * Constructor
+	 *
+	 * @param message mensaje
+	 * @param errorCode código de error
+	 */
+	public XAErrorsException(final String message, final int errorCode) {
+		super(message);
+		this.errorCode = errorCode;
+	}
 
-import com.farmafene.commons.j2ee.tools.jca.common.CommonThreadFactory;
-
-class NamedThreadFactory extends CommonThreadFactory implements ThreadFactory {
+	/**
+	 * Constructor
+	 *
+	 * @param message mensaje
+	 * @param errorCode código de error
+	 * @param t excepción que la causa
+	 */
+	public XAErrorsException(final String message, final int errorCode, final Throwable t) {
+		super(message);
+		this.errorCode = errorCode;
+		initCause(t);
+	}
 }

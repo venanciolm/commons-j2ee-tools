@@ -45,9 +45,10 @@ import org.springframework.beans.factory.InitializingBean;
 public class GeronimoConnectionFactoryFactoryBean implements FactoryBean<Object>, InitializingBean, DisposableBean {
 
 	private RecoverableTransactionManager transactionManager;
+	// : none, local, xa
 	private String transaction;
-	private String partitionStrategy; // : none, by-subject,
-	// by-connector-properties
+	// : none, by-subject ,by-connector-properties
+	private String partitionStrategy;
 	private boolean pooling = true;
 	private int poolMaxSize = 10;
 	private int poolMinSize = 0;
@@ -96,7 +97,7 @@ public class GeronimoConnectionFactoryFactoryBean implements FactoryBean<Object>
 				// Instanciate the Geronimo Connection Manager
 				this.connectionManager = new GenericConnectionManager(this.transactionSupport, this.poolingSupport, this.subjectSource,
 						this.connectionTracker, this.transactionManager, this.managedConnectionFactory, getClass().getName(), getClass()
-								.getClassLoader());
+						.getClassLoader());
 
 				this.connectionManager.doStart();
 			}

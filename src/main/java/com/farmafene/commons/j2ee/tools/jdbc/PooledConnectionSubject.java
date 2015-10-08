@@ -21,14 +21,20 @@
  * OF CONTRACT, TORT OR OTHERWISE,  ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-/**
- *
- */
-package com.farmafene.commons.j2ee.tools.jca.geronimo3;
+package com.farmafene.commons.j2ee.tools.jdbc;
 
-import java.util.concurrent.ThreadFactory;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
-import com.farmafene.commons.j2ee.tools.jca.common.CommonThreadFactory;
+public interface PooledConnectionSubject {
 
-class NamedThreadFactory extends CommonThreadFactory implements ThreadFactory {
+	public void connectionClosed(SQLException e);
+
+	public void connectionErrorOccurred(SQLException e);
+
+	public void statementClosed(PreparedStatement stmt, SQLException e);
+
+	public void statementErrorOccurred(PreparedStatement stmt, SQLException e);
+
+	public void addStatement(PreparedStatement stmt);
 }

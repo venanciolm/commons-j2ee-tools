@@ -35,14 +35,14 @@
 		class="com.farmafene.commons.j2ee.tools.jca.geronimo3.GeronimoConnectionFactoryFactoryBean">
 		<property name="transactionManager" ref="transactionManager" />
 		<property name="partitionStrategy" value="none" />
-		<property name="transaction" value="local" />
+		<property name="transaction" value="xa" />
 		<property name="managedConnectionFactory" ref="managedConnectionFactory1" />
 	</bean>
 	<bean id="Datasource2"
 		class="com.farmafene.commons.j2ee.tools.jca.geronimo3.GeronimoConnectionFactoryFactoryBean">
 		<property name="transactionManager" ref="transactionManager" />
 		<property name="partitionStrategy" value="none" />
-		<property name="transaction" value="local" />
+		<property name="transaction" value="xa" />
 		<property name="managedConnectionFactory" ref="managedConnectionFactory2" />
 	</bean>
 </beans>
