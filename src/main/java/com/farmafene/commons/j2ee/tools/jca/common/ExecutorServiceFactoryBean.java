@@ -56,10 +56,13 @@ public class ExecutorServiceFactoryBean implements InitializingBean, DisposableB
 		BlockingQueue<Runnable> bq = null;
 		assert 1 <= this.poolSize : "invalid  poolSize value";
 		if ((this.maxRunnables - this.poolSize) > 0) {
+			// Cola limitada
 			bq = new LinkedBlockingQueue<Runnable>(this.maxRunnables - this.poolSize);
 		} else if ((this.maxRunnables - this.poolSize) < 0) {
+			// Cola infinita
 			bq = new LinkedBlockingQueue<Runnable>();
 		} else {
+			// caso de que la cola sea 0
 			bq = new SynchronousQueue<Runnable>(true);
 		}
 		if (null != this.name && StringUtils.hasText(this.name)) {
