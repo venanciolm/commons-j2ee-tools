@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009-2015 farmafene.com
  * All rights reserved.
- * 
+ *
  * Permission is hereby granted, free  of charge, to any person obtaining
  * a  copy  of this  software  and  associated  documentation files  (the
  * "Software"), to  deal in  the Software without  restriction, including
@@ -9,10 +9,10 @@
  * distribute,  sublicense, and/or sell  copies of  the Software,  and to
  * permit persons to whom the Software  is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The  above  copyright  notice  and  this permission  notice  shall  be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE  SOFTWARE IS  PROVIDED  "AS  IS", WITHOUT  WARRANTY  OF ANY  KIND,
  * EXPRESS OR  IMPLIED, INCLUDING  BUT NOT LIMITED  TO THE  WARRANTIES OF
  * MERCHANTABILITY,    FITNESS    FOR    A   PARTICULAR    PURPOSE    AND
@@ -22,96 +22,13 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 /**
- * 
+ *
  */
 package com.farmafene.commons.j2ee.tools.jca.geronimo3;
 
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * @author vlopez
- *
- */
-class NamedThreadFactory implements ThreadFactory {
+import com.farmafene.commons.j2ee.tools.jca.common.CommonThreadFactory;
 
-	private static AtomicInteger threadFactory = new AtomicInteger();
-	private boolean daemon = true;
-	private String name = "FF";
-	private String type = "W";
-	private AtomicInteger generator = new AtomicInteger();
-	private ThreadGroup group;
-	private int id;
-
-	public NamedThreadFactory() {
-		SecurityManager s = System.getSecurityManager();
-		group = (s != null) ? new ThreadGroup(s.getThreadGroup(),
-				"FarmafeneThreadGroup") : new ThreadGroup(Thread
-				.currentThread().getThreadGroup(), "FarmafeneThreadGroup");
-		id = threadFactory.getAndIncrement();
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @see java.util.concurrent.ThreadFactory#newThread(java.lang.Runnable)
-	 */
-	@Override
-	public Thread newThread(Runnable r) {
-		Thread th = new Thread(group, r, generateName());
-		th.setDaemon(daemon);
-		return th;
-	}
-
-	private String generateName() {
-		return String.format("%1$s[%2$d]%3$s[%4$d]", name, id, type,
-				generator.getAndIncrement());
-	}
-
-	/**
-	 * @return the daemon
-	 */
-	public boolean isDaemon() {
-		return daemon;
-	}
-
-	/**
-	 * @param daemon
-	 *            the daemon to set
-	 */
-	public void setDaemon(boolean daemon) {
-		this.daemon = daemon;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * @param type
-	 *            the type to set
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
-
+class NamedThreadFactory extends CommonThreadFactory implements ThreadFactory {
 }
