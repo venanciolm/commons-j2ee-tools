@@ -87,12 +87,6 @@ public class BTMInboundRA extends ResourceBean implements XAResourceProducer,
 			item = holder;
 			this.enlisted.put(xaResource, item);
 			TransactionContextHelper.enlistInCurrentTransaction(holder);
-		} else {
-			logger.debug("Container not found!");
-		}
-		if (logger.isDebugEnabled()) {
-			logger.debug("Enlisted: {} in {}", xaResource,
-					BTMLocator.getBitronixTransactionManager());
 		}
 	}
 
@@ -115,14 +109,6 @@ public class BTMInboundRA extends ResourceBean implements XAResourceProducer,
 	 */
 	@Override
 	public XAResourceHolderState startRecovery() throws RecoveryException {
-		if (logger.isDebugEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
-			ps.println();
-			ps.println("/*--------------------------------------------------+\\");
-			ps.println("|| startRecovery                                    ||");
-			ps.print("\\+--------------------------------------------------*/");
-			logger.debug("{}", ps);
-		}
 		try {
 			/*
 			 * En realidad, no hace nada!
@@ -138,11 +124,11 @@ public class BTMInboundRA extends ResourceBean implements XAResourceProducer,
 		} catch (final Exception e) {
 			StringPrintStream ps = new StringPrintStream();
 			ps.println();
-			ps.println("/*--------------------------------------------------+\\");
+			ps.println("/*--------------------------------------------------+|");
 			ps.println("|| startRecovery                                    ||");
 			ps.println("|| Error:                                           ||");
 			e.printStackTrace(ps);
-			ps.print("\\+--------------------------------------------------*/");
+			ps.print("|+--------------------------------------------------*/");
 			logger.error("{}", ps);
 			throw new RecoveryException("startRecovery()", e);
 		}
@@ -155,25 +141,17 @@ public class BTMInboundRA extends ResourceBean implements XAResourceProducer,
 	 */
 	@Override
 	public void endRecovery() throws RecoveryException {
-		if (logger.isDebugEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
-			ps.println();
-			ps.println("/*--------------------------------------------------+\\");
-			ps.println("|| endRecovery                                      ||");
-			ps.print("\\+--------------------------------------------------*/");
-			logger.debug("{}", ps);
-		}
 		try {
 			this.recoveryXAResourceHolder.close();
 			this.revoveryXAStatefulHolder.close();
 		} catch (final Exception e) {
 			StringPrintStream ps = new StringPrintStream();
 			ps.println();
-			ps.println("/*--------------------------------------------------+\\");
+			ps.println("/*--------------------------------------------------+|");
 			ps.println("|| endRecovery                                      ||");
 			ps.println("|| Error:                                           ||");
 			e.printStackTrace(ps);
-			ps.print("\\+--------------------------------------------------*/");
+			ps.print("|+--------------------------------------------------*/");
 			logger.error("{}", ps);
 			throw new RecoveryException("endRecovery()", e);
 		}

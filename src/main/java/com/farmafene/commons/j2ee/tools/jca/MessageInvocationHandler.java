@@ -31,17 +31,12 @@ import javax.resource.ResourceException;
 import javax.resource.spi.endpoint.MessageEndpoint;
 import javax.transaction.xa.XAResource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class MessageInvocationHandler implements InvocationHandler,
 		MessageEndpoint {
 
 	private static Method BEFORE_DELIVERY;
 	private static Method AFTER_DELIVERY;
 	private static Method RELEASE;
-	private static final Logger logger = LoggerFactory
-			.getLogger(MessageInvocationHandler.class);
 
 	static {
 		try {
@@ -83,9 +78,6 @@ public class MessageInvocationHandler implements InvocationHandler,
 	@Override
 	public void beforeDelivery(Method method) throws NoSuchMethodException,
 			ResourceException {
-		if (logger.isDebugEnabled()) {
-			logger.debug("beforeDelivery(" + method + ")");
-		}
 		throw new ResourceException(new UnsupportedOperationException(
 				"MessageEndpoint#beforeDelivery(java.lang.reflect.Method)"));
 	}
@@ -97,9 +89,6 @@ public class MessageInvocationHandler implements InvocationHandler,
 	 */
 	@Override
 	public void afterDelivery() throws ResourceException {
-		if (logger.isDebugEnabled()) {
-			logger.debug("afterDelivery()");
-		}
 		throw new ResourceException(new UnsupportedOperationException(
 				"MessageEndpoint#afterDelivery()"));
 	}
@@ -111,9 +100,6 @@ public class MessageInvocationHandler implements InvocationHandler,
 	 */
 	@Override
 	public void release() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("release()");
-		}
 	}
 
 	/**
@@ -133,9 +119,6 @@ public class MessageInvocationHandler implements InvocationHandler,
 		} else if (RELEASE.equals(method)) {
 			release();
 		} else {
-			if (logger.isDebugEnabled()) {
-				logger.debug("invoke({})", method);
-			}
 			try {
 				invoke = method.invoke(inner, args);
 			} catch (InvocationTargetException e) {
