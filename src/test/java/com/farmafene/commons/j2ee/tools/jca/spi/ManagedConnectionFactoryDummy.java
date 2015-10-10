@@ -1,0 +1,80 @@
+/*
+ * Copyright (c) 2009-2015 farmafene.com
+ * All rights reserved.
+ * 
+ * Permission is hereby granted, free  of charge, to any person obtaining
+ * a  copy  of this  software  and  associated  documentation files  (the
+ * "Software"), to  deal in  the Software without  restriction, including
+ * without limitation  the rights to  use, copy, modify,  merge, publish,
+ * distribute,  sublicense, and/or sell  copies of  the Software,  and to
+ * permit persons to whom the Software  is furnished to do so, subject to
+ * the following conditions:
+ * 
+ * The  above  copyright  notice  and  this permission  notice  shall  be
+ * included in all copies or substantial portions of the Software.
+ * 
+ * THE  SOFTWARE IS  PROVIDED  "AS  IS", WITHOUT  WARRANTY  OF ANY  KIND,
+ * EXPRESS OR  IMPLIED, INCLUDING  BUT NOT LIMITED  TO THE  WARRANTIES OF
+ * MERCHANTABILITY,    FITNESS    FOR    A   PARTICULAR    PURPOSE    AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE,  ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+package com.farmafene.commons.j2ee.tools.jca.spi;
+
+import com.farmafene.commons.j2ee.tools.jca.spi.ConnectionFactorySPI;
+import com.farmafene.commons.j2ee.tools.jca.spi.ManagedConnectionFactorySPI;
+import com.farmafene.commons.j2ee.tools.jca.spi.ManagedConnectionMetaDataSPI;
+import com.farmafene.commons.j2ee.tools.jca.spi.ManagedConnectionSPI;
+
+@SuppressWarnings("serial")
+public class ManagedConnectionFactoryDummy
+		extends
+		ManagedConnectionFactorySPI<IManagedDriverDummy, ConnectionRequestInfoDummy, ManagedConnectionMetaDataSPI> {
+	private ConnectionRequestInfoDummy cri;
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see com.farmafene.commons.j2ee.tools.jca.spi.ManagedConnectionFactorySPI#createInstaceOfConnectionFactorySPI()
+	 */
+	@Override
+	public ConnectionFactorySPI<IManagedDriverDummy> createInstaceOfConnectionFactorySPI() {
+		return new ConnectionFactoryDummy();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see com.farmafene.commons.j2ee.tools.jca.spi.ManagedConnectionFactorySPI#getConnectionRequestInfo()
+	 */
+	@Override
+	public ConnectionRequestInfoDummy getConnectionRequestInfo() {
+		if (null == cri) {
+			cri = new ConnectionRequestInfoDummy();
+		}
+		return cri;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see com.farmafene.commons.j2ee.tools.jca.spi.ManagedConnectionFactorySPI#createInstanceOfManagedConnectionSPI()
+	 */
+	@Override
+	public ManagedConnectionSPI<IManagedDriverDummy, ConnectionRequestInfoDummy, ManagedConnectionMetaDataSPI> createInstanceOfManagedConnectionSPI() {
+		return new ManagedConnectionDummy();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see com.farmafene.commons.j2ee.tools.jca.spi.ManagedConnectionFactorySPI#getManagedConnectionMetaData()
+	 */
+	@Override
+	public ManagedConnectionMetaDataSPI getManagedConnectionMetaData() {
+		return new ManagedConnectionMetaDataSPI() {
+		};
+	}
+}
