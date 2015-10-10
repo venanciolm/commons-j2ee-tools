@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.farmafene.commons</groupId>
 	<artifactId>commons-j2ee-tools</artifactId>
-	<version>1.1.0-beta1</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<properties>
 		<!-- -->
 		<!-- -->
@@ -49,7 +49,7 @@
 		<hsqldb.VERSION>1.8.0.10</hsqldb.VERSION>
 	</properties>
 	<scm>
-		<tag>1.1.0-beta1</tag>
+		<tag>development</tag>
 		<url>https://github.com/venanciolm/commons-j2ee-tools</url>
 		<connection>scm:git:${project.scm.url}.git</connection>
 		<developerConnection>scm:git:${project.scm.url}.git</developerConnection>
