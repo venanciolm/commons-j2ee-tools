@@ -34,22 +34,22 @@
 	<bean id="connectionFactory1"
 		class="com.farmafene.commons.j2ee.tools.jca.btm.BTMConectionFactoryFactoryBean">
 		<property name="name" value="managedConnectionFactory1" />
-		<property name="minPoolSize" value="2" />
-		<property name="maxPoolSize" value="2" />
+		<property name="minPoolSize" value="1" />
+		<property name="maxPoolSize" value="1" />
 		<property name="managedConnectionFactory" ref="managedConnectionFactory1" />
 	</bean>
 	<bean id="connectionFactory2"
 		class="com.farmafene.commons.j2ee.tools.jca.btm.BTMConectionFactoryFactoryBean">
 		<property name="name" value="managedConnectionFactory2" />
-		<property name="minPoolSize" value="2" />
-		<property name="maxPoolSize" value="2" />
+		<property name="minPoolSize" value="1" />
+		<property name="maxPoolSize" value="1" />
 		<property name="managedConnectionFactory" ref="managedConnectionFactory2" />
 	</bean>
 	<bean id="connectionFactory3"
 		class="com.farmafene.commons.j2ee.tools.jca.btm.BTMConectionFactoryFactoryBean">
 		<property name="name" value="datasource1" />
-		<property name="minPoolSize" value="2" />
-		<property name="maxPoolSize" value="2" />
+		<property name="minPoolSize" value="1" />
+		<property name="maxPoolSize" value="1" />
 		<property name="managedConnectionFactory" ref="managedConnectionFactory3" />
 	</bean>
 </beans>
