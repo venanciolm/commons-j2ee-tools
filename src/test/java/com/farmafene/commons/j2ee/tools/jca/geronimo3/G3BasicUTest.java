@@ -25,11 +25,6 @@ package com.farmafene.commons.j2ee.tools.jca.geronimo3;
 
 import java.sql.SQLException;
 
-import javax.resource.spi.XATerminator;
-import javax.resource.spi.work.WorkManager;
-import javax.transaction.TransactionManager;
-import javax.transaction.TransactionSynchronizationRegistry;
-
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -37,14 +32,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.farmafene.commons.j2ee.tools.jca.common.BasicBean;
+import com.farmafene.commons.j2ee.tools.jca.common.StringPrintStream;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:com/farmafene/commons/j2ee/tools/jca/WM_Geronimo3__Genonimo3.xml" })
-public class G3BasicUTest {
+public class G3BasicUTest implements InitializingBean {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(G3BasicUTest.class);
@@ -69,19 +68,24 @@ public class G3BasicUTest {
 		CTX.close();
 	}
 
-	@Test
-	public void beanFactory1Test() {
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		if (logger.isInfoEnabled()) {
+			StringPrintStream ps = new StringPrintStream();
+			ps.println();
+			ps.println("/*--------------------------------------------+|");
+			ps.println("|| Begin of Test                              ||");
+			ps.print("+---------------------------------------------*/");
+			logger.info("{}", ps);
+		}
 		Assert.assertNotNull(this.ctx);
 		CTX = this.ctx;
-		Assert.assertNotNull(this.ctx.getBean(TransactionManager.class));
-		logger.info("TxManager: {}", this.ctx.getBean(TransactionManager.class));
-		Assert.assertNotNull(this.ctx.getBean(WorkManager.class));
-		logger.info("WorkManager: {}", this.ctx.getBean(WorkManager.class));
-		Assert.assertNotNull(this.ctx.getBean(XATerminator.class));
-		logger.info("XATerminator: {}", this.ctx.getBean(XATerminator.class));
-		Assert.assertNotNull(this.ctx
-				.getBean(TransactionSynchronizationRegistry.class));
-		logger.info("TransactionSynchronizationRegistry: {}",
-				this.ctx.getBean(TransactionSynchronizationRegistry.class));
+	}
+
+	@Test
+	public void beanFactory1Test() {
+		BasicBean bean = new BasicBean();
+		bean.setCtx(ctx);
+		bean.doTest();
 	}
 }

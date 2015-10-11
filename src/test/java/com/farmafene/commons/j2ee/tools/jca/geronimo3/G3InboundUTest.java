@@ -76,9 +76,9 @@ public class G3InboundUTest implements InitializingBean {
 		if (logger.isInfoEnabled()) {
 			StringPrintStream ps = new StringPrintStream();
 			ps.println();
-			ps.println("================================================");
-			ps.println("= Begin of Test                                =");
-			ps.print("================================================");
+			ps.println("/*--------------------------------------------+|");
+			ps.println("|| Begin of Test                              ||");
+			ps.print(  "+---------------------------------------------*/");
 			logger.info("{}", ps);
 		}
 		Assert.assertNotNull(this.ctx);
