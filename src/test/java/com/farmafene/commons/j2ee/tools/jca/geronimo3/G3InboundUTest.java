@@ -25,9 +25,6 @@ package com.farmafene.commons.j2ee.tools.jca.geronimo3;
 
 import java.sql.SQLException;
 
-import javax.resource.spi.work.WorkException;
-import javax.transaction.xa.XAException;
-
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -78,7 +75,7 @@ public class G3InboundUTest implements InitializingBean {
 			ps.println();
 			ps.println("/*--------------------------------------------+|");
 			ps.println("|| Begin of Test                              ||");
-			ps.print(  "+---------------------------------------------*/");
+			ps.print("+---------------------------------------------*/");
 			logger.info("{}", ps);
 		}
 		Assert.assertNotNull(this.ctx);
@@ -86,10 +83,10 @@ public class G3InboundUTest implements InitializingBean {
 	}
 
 	@Test
-	public void test() throws WorkException, InterruptedException, XAException {
+	public void test() throws Exception {
 		InboundBean bean = new InboundBean();
 		bean.setCtx(ctx);
-		bean.aa_cretateFactory();
-		bean.cretateFactory();
+		bean.initTest();
+		bean.inBoundTest();
 	}
 }

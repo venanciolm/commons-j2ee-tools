@@ -25,9 +25,6 @@ package com.farmafene.commons.j2ee.tools.jca.btm;
 
 import java.sql.SQLException;
 
-import javax.resource.spi.work.WorkException;
-import javax.transaction.xa.XAException;
-
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -86,10 +83,10 @@ public class BTMInboundUTest implements InitializingBean {
 	}
 
 	@Test
-	public void test() throws WorkException, InterruptedException, XAException {
+	public void test() throws Exception {
 		InboundBean bean = new InboundBean();
 		bean.setCtx(ctx);
-		bean.aa_cretateFactory();
-		bean.cretateFactory();
+		bean.initTest();
+		bean.inBoundTest();
 	}
 }

@@ -32,4 +32,13 @@
         http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 	<import resource="../WM_Geronimo3__BTMXATerminator.xml" />
 	<import resource="../inbound.xml" />
+	
+	<bean id="connectionFactory0"
+		class="com.farmafene.commons.j2ee.tools.jca.btm.BTMConectionFactoryFactoryBean">
+		<property name="name" value="managedConnectionFactory0" />
+		<property name="minPoolSize" value="5" />
+		<property name="maxPoolSize" value="5" />
+		<property name="managedConnectionFactory" ref="managedConnectionFactory0" />
+	</bean>
+
 </beans>

@@ -53,8 +53,9 @@ public class MessageEPImpl implements MessageEPIntf {
 	 * @see com.farmafene.commons.jca.MessageEPIntf#echo()
 	 */
 	@Override
-	public void echo() {
+	public String echo(String echo) {
 		logger.info("echo()");
+		return echo;
 
 	}
 

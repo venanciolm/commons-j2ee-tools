@@ -72,8 +72,8 @@ class ReleaseProviderWorkManager extends GeronimoWorkManager implements
 	public void doWork(Work work, long startTimeout,
 			ExecutionContext execContext, WorkListener workListener)
 			throws WorkException {
-		Work newWork = workFactory(work);
-		super.doWork(newWork, startTimeout, execContext, workListener);
+		Work newWork = workFactory(work, execContext);
+		super.doWork(newWork, startTimeout, null, workListener);
 	}
 
 	/**
@@ -98,9 +98,8 @@ class ReleaseProviderWorkManager extends GeronimoWorkManager implements
 	public long startWork(Work work, long startTimeout,
 			ExecutionContext execContext, WorkListener workListener)
 			throws WorkException {
-		Work newWork = workFactory(work);
-		return super
-				.startWork(newWork, startTimeout, execContext, workListener);
+		Work newWork = workFactory(work, execContext);
+		return super.startWork(newWork, startTimeout, null, workListener);
 	}
 
 	/**
@@ -125,11 +124,14 @@ class ReleaseProviderWorkManager extends GeronimoWorkManager implements
 	public void scheduleWork(Work work, long startTimeout,
 			ExecutionContext execContext, WorkListener workListener)
 			throws WorkException {
-		Work newWork = workFactory(work);
-		super.scheduleWork(newWork, startTimeout, execContext, workListener);
+		Work newWork = workFactory(work, execContext);
+		super.scheduleWork(newWork, startTimeout, null, workListener);
 	}
 
 	private Work workFactory(Work work) {
-		return new ReleasedWork(work, releaseExecutor);
+		return new ReleasedWork(work,null, releaseExecutor);
+	}
+	private Work workFactory(Work work,ExecutionContext execContext) {
+		return new ReleasedWork(work, execContext,releaseExecutor);
 	}
 }

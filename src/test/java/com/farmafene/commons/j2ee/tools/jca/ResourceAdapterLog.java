@@ -23,7 +23,9 @@
  */
 package com.farmafene.commons.j2ee.tools.jca;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -33,7 +35,7 @@ import javax.resource.spi.BootstrapContext;
 import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.ResourceAdapterInternalException;
 import javax.resource.spi.endpoint.MessageEndpointFactory;
-import javax.resource.spi.work.Work;
+import javax.transaction.TransactionManager;
 import javax.transaction.xa.XAResource;
 
 import org.slf4j.Logger;
@@ -41,7 +43,8 @@ import org.slf4j.LoggerFactory;
 
 public class ResourceAdapterLog implements ResourceAdapter {
 
-	private static final Logger logger = LoggerFactory.getLogger(ResourceAdapterLog.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(ResourceAdapterLog.class);
 
 	private final Map<ActivationSpec, MessageEndpointFactory> mepf;
 	private BootstrapContext bootstrapContext;
@@ -69,10 +72,10 @@ public class ResourceAdapterLog implements ResourceAdapter {
 	 * @see javax.resource.spi.ResourceAdapter#start(javax.resource.spi.BootstrapContext)
 	 */
 	@Override
-	public void start(final BootstrapContext ctx) throws ResourceAdapterInternalException {
+	public void start(final BootstrapContext ctx)
+			throws ResourceAdapterInternalException {
 		logger.info("start(" + ctx + ")! on " + this);
 		this.bootstrapContext = ctx;
-
 	}
 
 	/**
@@ -93,12 +96,17 @@ public class ResourceAdapterLog implements ResourceAdapter {
 	 *      javax.resource.spi.ActivationSpec)
 	 */
 	@Override
-	public void endpointActivation(final MessageEndpointFactory endpointFactory, final ActivationSpec spec) throws ResourceException {
+	public void endpointActivation(
+			final MessageEndpointFactory endpointFactory,
+			final ActivationSpec spec) throws ResourceException {
 		logger.info("endpointActivation(" + endpointFactory + ", " + spec + ")");
 		this.mepf.put(spec, endpointFactory);
-		if (Work.class.isAssignableFrom(spec.getClass())) {
-			((Work) spec).run();
-		}
+		((ActivationSpecLog) spec).setWorkManager(bootstrapContext
+				.getWorkManager());
+		((ActivationSpecLog) spec).setTransactionManager((TransactionManager)bootstrapContext
+				.getXATerminator());
+		((ActivationSpecLog) spec).setMessageEndpointFactory(endpointFactory);
+		((ActivationSpecLog) spec).start();
 	}
 
 	/**
@@ -109,13 +117,13 @@ public class ResourceAdapterLog implements ResourceAdapter {
 	 *      javax.resource.spi.ActivationSpec)
 	 */
 	@Override
-	public void endpointDeactivation(final MessageEndpointFactory endpointFactory, final ActivationSpec spec) {
-		logger.info("endpointDeactivation(" + endpointFactory + ", " + spec + ")");
-		if (Work.class.isAssignableFrom(spec.getClass())) {
-			((Work) spec).release();
-		}
+	public void endpointDeactivation(
+			final MessageEndpointFactory endpointFactory,
+			final ActivationSpec spec) {
+		logger.info("endpointDeactivation(" + endpointFactory + ", " + spec
+				+ ")");
 		this.mepf.remove(spec);
-
+		((ActivationSpecLog) spec).stop();
 	}
 
 	/**
@@ -125,9 +133,14 @@ public class ResourceAdapterLog implements ResourceAdapter {
 	 *      ActivationSpec[])
 	 */
 	@Override
-	public XAResource[] getXAResources(final ActivationSpec[] specs) throws ResourceException {
+	public XAResource[] getXAResources(final ActivationSpec[] specs)
+			throws ResourceException {
 		logger.info("getXAResources(" + Arrays.toString(specs) + ")");
-		return new XAResource[] {};
+		List<XAResource> lista = new ArrayList<XAResource>();
+		for (ActivationSpecLog m : (ActivationSpecLog[]) specs) {
+			lista.addAll(m.getXAResources().values());
+		}
+		return lista.toArray(new XAResource[0]);
 	}
 
 	/**
@@ -135,9 +148,5 @@ public class ResourceAdapterLog implements ResourceAdapter {
 	 */
 	public BootstrapContext getBootstrapContext() {
 		return this.bootstrapContext;
-	}
-
-	public MessageEndpointFactory getMessageEndpointFactory(final ActivationSpec spec) {
-		return this.mepf.get(spec);
 	}
 }
