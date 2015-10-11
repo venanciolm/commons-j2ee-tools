@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009-2015 farmafene.com
  * All rights reserved.
- *
+ * 
  * Permission is hereby granted, free  of charge, to any person obtaining
  * a  copy  of this  software  and  associated  documentation files  (the
  * "Software"), to  deal in  the Software without  restriction, including
@@ -9,10 +9,10 @@
  * distribute,  sublicense, and/or sell  copies of  the Software,  and to
  * permit persons to whom the Software  is furnished to do so, subject to
  * the following conditions:
- *
+ * 
  * The  above  copyright  notice  and  this permission  notice  shall  be
  * included in all copies or substantial portions of the Software.
- *
+ * 
  * THE  SOFTWARE IS  PROVIDED  "AS  IS", WITHOUT  WARRANTY  OF ANY  KIND,
  * EXPRESS OR  IMPLIED, INCLUDING  BUT NOT LIMITED  TO THE  WARRANTIES OF
  * MERCHANTABILITY,    FITNESS    FOR    A   PARTICULAR    PURPOSE    AND
@@ -23,45 +23,9 @@
  */
 package com.farmafene.commons.j2ee.tools.jca;
 
-import javax.resource.ResourceException;
-import javax.resource.spi.endpoint.MessageEndpoint;
+import java.io.IOException;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public interface IConnectionFactory<Driver extends IManagedDriver> {
 
-public class MessageEndPointUTest {
-
-	private static final Logger logger = LoggerFactory.getLogger(MessageEndPointUTest.class);
-
-	@Test
-	public void createBean() throws ResourceException, NoSuchMethodException {
-		final DefaultMessageEndPointFactory epf = new DefaultMessageEndPointFactory();
-		epf.setMessageDrivenBeanClass(MessageEPImpl.class);
-		epf.setMessageDrivenBeanInterface(MessageEPIntf.class);
-		epf.setResourceAdapter(new ResourceAdapterLog());
-
-		final MessageEndpoint ep = epf.createEndpoint(null);
-		Throwable th = null;
-		try {
-			ep.afterDelivery();
-		} catch (final Throwable e) {
-			th = e;
-		}
-		Assert.assertNotNull(th);
-		Assert.assertEquals(ResourceException.class, th.getClass());
-		th = null;
-		try {
-			ep.beforeDelivery(null);
-		} catch (final Throwable e) {
-			th = e;
-		}
-		Assert.assertNotNull(th);
-		Assert.assertEquals(ResourceException.class, th.getClass());
-		ep.release();
-		final MessageEPIntf m = (MessageEPIntf) ep;
-		m.echo();
-		logger.info(m.toString());
-	}
+	Driver getConnection() throws IOException;
 }

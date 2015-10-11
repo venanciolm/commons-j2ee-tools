@@ -48,8 +48,6 @@ import bitronix.tm.resource.common.XAStatefulHolder;
 import bitronix.tm.utils.Decoder;
 import bitronix.tm.utils.MonotonicClock;
 
-import com.farmafene.commons.j2ee.tools.jca.common.StringPrintStream;
-
 public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 		ConnectionEventListener, StateChangeListener {
 
@@ -90,31 +88,6 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 				Decoder.decodeXAStatefulHolderState(getState()));
 		sb.append("}");
 		return sb.toString();
-	}
-
-	private String getEvent(final int event) {
-		String salida = null;
-		switch (event) {
-		case ConnectionEvent.CONNECTION_CLOSED: // 1
-			salida = "CONNECTION_CLOSED";
-			break;
-		case ConnectionEvent.LOCAL_TRANSACTION_STARTED: // 2
-			salida = "LOCAL_TRANSACTION_STARTED";
-			break;
-		case ConnectionEvent.LOCAL_TRANSACTION_COMMITTED: // 3
-			salida = "LOCAL_TRANSACTION_COMMITTED";
-			break;
-		case ConnectionEvent.CONNECTION_ERROR_OCCURRED:// 4
-			salida = "CONNECTION_ERROR_OCCURRED";
-			break;
-		case ConnectionEvent.LOCAL_TRANSACTION_ROLLEDBACK:// 5
-			salida = "LOCAL_TRANSACTION_ROLLEDBACK";
-			break;
-		default:
-			salida = "UNKNOW";
-		}
-		return salida;
-
 	}
 
 	/**
@@ -190,7 +163,6 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 	@Override
 	public void connectionClosed(final ConnectionEvent event) {
 		this.usageCount--;
-		log("connectionClosed", event);
 		try {
 			TransactionContextHelper.requeue(this, this.connectionManager);
 		} catch (final BitronixSystemException e) {
@@ -213,7 +185,6 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 	 */
 	@Override
 	public void localTransactionStarted(final ConnectionEvent event) {
-		log("localTransactionStarted", event);
 	}
 
 	/**
@@ -223,7 +194,6 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 	 */
 	@Override
 	public void localTransactionCommitted(final ConnectionEvent event) {
-		log("localTransactionCommitted", event);
 	}
 
 	/**
@@ -233,7 +203,6 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 	 */
 	@Override
 	public void localTransactionRolledback(final ConnectionEvent event) {
-		log("localTransactionRolledback", event);
 	}
 
 	/**
@@ -243,26 +212,7 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder implements
 	 */
 	@Override
 	public void connectionErrorOccurred(final ConnectionEvent event) {
-		log("connectionErrorOccurred", event);
 		this.fail = true;
-	}
-
-	private void log(final String method, final ConnectionEvent event) {
-		if (logger.isDebugEnabled()) {
-			StringPrintStream pf = new StringPrintStream();
-			pf.println();
-			pf.println("/*========================================================+|");
-			pf.print("|| Method:           ");
-			pf.println(method);
-			pf.print("|| Id:               ");
-			pf.println(getEvent(event.getId()));
-			pf.print("|| Source:           ");
-			pf.println(event.getSource());
-			pf.print("|| ConnectionHandle: ");
-			pf.println(event.getConnectionHandle());
-			pf.print("|+=========================================================*/");
-			logger.debug("{}", pf);
-		}
 	}
 
 	/**

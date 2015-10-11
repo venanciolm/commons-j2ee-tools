@@ -30,6 +30,7 @@
         http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
 	<bean id="Container"
 		class="com.farmafene.commons.j2ee.tools.jca.DefaultResourceAdapterContainer">
 		<property name="resourceAdapter" ref="ra" />
@@ -42,6 +43,7 @@
 			</bean>
 		</property>
 	</bean>
+
 	<bean id="myActivationSpec"
 		class="com.farmafene.commons.j2ee.tools.jca.DefaultActivationSpecContainer">
 		<property name="resourceAdapter" ref="ra" />
@@ -57,7 +59,12 @@
 			value="com.farmafene.commons.j2ee.tools.jca.MessageEPImpl" />
 		<property name="IEnlistXAResource" ref="IEnlistXAResource" />
 	</bean>
+	<bean id="managedConnectionFactory0"
+		class="com.farmafene.commons.j2ee.tools.jca.spi.inout.ManagedConnectionFactoryIODummy">
+		<property name="xATerminator" ref="transactionManager" />
+		<property name="activationSpec" ref="as" />
+	</bean>
 	<bean id="ra" class="com.farmafene.commons.j2ee.tools.jca.ResourceAdapterLog" />
-	<bean id="as"
-		class="com.farmafene.commons.j2ee.tools.jca.common.InboundAtivationSpec" />
+	<bean id="as" class="com.farmafene.commons.j2ee.tools.jca.ActivationSpecLog" />
+
 </beans>

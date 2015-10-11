@@ -27,6 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
+import javax.resource.NotSupportedException;
+import javax.resource.spi.work.ExecutionContext;
+import javax.resource.spi.work.TransactionContext;
 import javax.resource.spi.work.Work;
 import javax.resource.spi.work.WorkContext;
 import javax.resource.spi.work.WorkContextProvider;
@@ -36,10 +39,13 @@ class ReleasedWork implements Work, WorkContextProvider {
 
 	private Work work;
 	private Executor executor;
+	private ExecutionContext execContext;
 
-	public ReleasedWork(Work work, Executor releaseExecutor) {
+	public ReleasedWork(Work work, ExecutionContext execContext,
+			Executor releaseExecutor) {
 		this.work = work;
 		this.executor = releaseExecutor;
+		this.execContext = execContext;
 	}
 
 	@Override
@@ -52,6 +58,15 @@ class ReleasedWork implements Work, WorkContextProvider {
 		List<WorkContext> workContexts = new ArrayList<WorkContext>();
 		if (work instanceof WorkContextProvider) {
 			workContexts.addAll(((WorkContextProvider) work).getWorkContexts());
+		} else if (null != execContext) {
+
+			TransactionContext tc = new TransactionContext();
+			tc.setXid(execContext.getXid());
+			try {
+				tc.setTransactionTimeout(execContext.getTransactionTimeout());
+			} catch (NotSupportedException e) {
+			}
+			workContexts.add(tc);
 		}
 		workContexts.add(new ReleaseContext(work, executor));
 		return workContexts;

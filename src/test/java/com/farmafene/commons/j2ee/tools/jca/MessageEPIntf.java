@@ -25,5 +25,5 @@ package com.farmafene.commons.j2ee.tools.jca;
 
 public interface MessageEPIntf {
 
-	public void echo();
+	public String echo(String echo);
 }

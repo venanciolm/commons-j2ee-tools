@@ -23,21 +23,21 @@
  */
 package com.farmafene.commons.j2ee.tools.jca.common;
 
+import java.io.IOException;
+
 import javax.resource.spi.XATerminator;
-import javax.resource.spi.work.WorkException;
 import javax.resource.spi.work.WorkManager;
 import javax.transaction.TransactionManager;
 import javax.transaction.TransactionSynchronizationRegistry;
-import javax.transaction.xa.XAException;
-import javax.transaction.xa.XAResource;
 
-import org.apache.geronimo.transaction.manager.GeronimoTransactionManager;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import com.farmafene.commons.j2ee.tools.jca.XAResourceLog;
+import com.farmafene.commons.j2ee.tools.jca.ActivationSpecLog;
+import com.farmafene.commons.j2ee.tools.jca.spi.IConnectionFactoryDummy;
+import com.farmafene.commons.j2ee.tools.jca.spi.IManagedDriverDummy;
 
 public class InboundBean {
 
@@ -50,16 +50,15 @@ public class InboundBean {
 
 	}
 
-	public void aa_cretateFactory() {
+	public void initTest() {
 		if (logger.isDebugEnabled()) {
 			StringPrintStream ps = new StringPrintStream();
 			ps.println();
-			ps.println("================================================");
-			ps.println("= Comenzamos a validar la BeanFactory          =");
-			ps.print("================================================");
+			ps.println("/*--------------------------------------------+|");
+			ps.println("|| Comenzamos a validar la BeanFactory        ||");
+			ps.print("|+--------------------------------------------*/");
 			logger.info("{}", ps);
 		}
-		Assert.assertNotNull(this.ctx);
 		logger.info("WorkManager:                        {}",
 				this.ctx.getBean(WorkManager.class));
 		logger.info("TransactionManager:                 {}",
@@ -73,177 +72,126 @@ public class InboundBean {
 		Assert.assertNotNull(this.ctx
 				.getBean(TransactionSynchronizationRegistry.class));
 		Assert.assertNotNull(this.ctx.getBean(XATerminator.class));
-	}
-
-	public void cretateFactory() throws WorkException, InterruptedException,
-			XAException {
 		if (logger.isDebugEnabled()) {
 			StringPrintStream ps = new StringPrintStream();
 			ps.println();
-			ps.println("================================================");
-			ps.println("= Comenzamos a validar la BeanFactory          =");
-			ps.print("================================================");
+			ps.println("/*--------------------------------------------+|");
+			ps.println("|| Existe el AtivationSpec                    ||");
+			ps.print("|+--------------------------------------------*/");
 			logger.info("{}", ps);
 		}
-		Assert.assertNotNull(this.ctx);
-		final WorkManager wm = this.ctx.getBean(WorkManager.class);
-		Assert.assertNotNull(wm);
-		if (logger.isDebugEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
-			ps.println();
-			ps.println("================================================");
-			ps.println("= Existe el AtivationSpec                      =");
-			ps.print("================================================");
-			logger.info("{}", ps);
-		}
-		final InboundAtivationSpec ac = this.ctx
-				.getBean(InboundAtivationSpec.class);
+		final ActivationSpecLog ac = this.ctx.getBean(ActivationSpecLog.class);
 		Assert.assertNotNull(ac);
 		if (logger.isDebugEnabled()) {
 			StringPrintStream ps = new StringPrintStream();
 			ps.println();
-			ps.println("================================================");
-			ps.println("= Existe el XATerminator                       =");
-			ps.print("================================================");
+			ps.println("/*--------------------------------------------+|");
+			ps.println("|| Existe el conector para inbound            ||");
+			ps.print("|+--------------------------------------------*/");
 			logger.info("{}", ps);
 		}
-		final XATerminator xATerminator = this.ctx.getBean(XATerminator.class);
-		Assert.assertNotNull(xATerminator);
-		XAResource xa = new XAResourceLog();
+		final IConnectionFactoryDummy dfi = this.ctx.getBean(
+				"connectionFactory0", IConnectionFactoryDummy.class);
+		Assert.assertNotNull(dfi);
+	}
 
-		InboundWork w = null;
-		if (logger.isDebugEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
-			ps.println();
-			ps.println("================================================");
-			ps.println("= Enviamos un trabajo                          =");
-			ps.print("================================================");
-			logger.info("{}", ps);
-		}
-		w = ac.process(null);
-		logger.info("Esperando el Release el trabajo {}", w);
-		w.getLatch().await();
-		if (logger.isDebugEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
-			ps.println();
-			ps.println("================================================");
-			ps.println("= Enviamos un trabajo XA                       =");
-			ps.print("================================================");
-			logger.info("{}", ps);
-		}
-		w = ac.process(xa);
-		logger.info("Esperando el Release el trabajo {}", w);
-		w.getLatch().await();
-		if (logger.isDebugEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
-			ps.println();
-			ps.println("================================================");
-			ps.println("= Procesado Trabajo XA");
-			ps.print("================================================");
-			logger.info("{}", ps);
-		}
-		InboundWork tx = null;
-		if (logger.isDebugEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
-			ps.println();
-			ps.println("================================================");
-			ps.println("= Enviamos un trabajo                          =");
-			ps.print("================================================");
-			logger.info("{}", ps);
-		}
-		tx = ac.processTx(null);
-		logger.info("Esperando el Release el trabajo {}", tx);
-		tx.getLatch().await();
-		logger.info("________________________________________________");
+	public void inBoundTest() throws Exception {
+		doTest1();
+		doTest2();
+		doTest3();
+		doTest4();
+	}
 
-		if (logger.isDebugEnabled()) {
+	void doTest1() throws IOException {
+		if (logger.isInfoEnabled()) {
 			StringPrintStream ps = new StringPrintStream();
 			ps.println();
-			ps.println("================================================");
-			ps.println("= Procesado Trabajo XA");
-			ps.print("================================================");
+			ps.println("/*--------------------------------------------+|");
+			ps.println("|| test 1                                     ||");
+			ps.print("|+--------------------------------------------*/");
 			logger.info("{}", ps);
 		}
-		tx = ac.processTx(xa);
-		logger.info("Esperando el Release el trabajo {}", tx);
-		tx.getLatch().await();
-		logger.info("________________________________________________");
+		final IConnectionFactoryDummy dfi = this.ctx.getBean(
+				"connectionFactory0", IConnectionFactoryDummy.class);
 
-		InboundTransactionalWork wtx = null;
+		IManagedDriverDummy con = dfi.getConnection();
+		Assert.assertEquals("Mal inicializado", 0, con.getAtomicInteger()
+				.intValue());
+		String msg = "hola";
+		String aux = con.echo(msg);
+		con.close();
+		Assert.assertEquals("Error en retorno", aux, msg);
+	}
 
-		wtx = ac.processInbound(null);
-		logger.info("Esperando el Release el trabajo {}", wtx);
-		wtx.getLatch().await();
-		if (logger.isDebugEnabled()) {
+	void doTest2() throws Exception {
+		if (logger.isInfoEnabled()) {
 			StringPrintStream ps = new StringPrintStream();
 			ps.println();
-			ps.println("================================================");
-			ps.println("= Reproducimos un  commit sin XAResource       =");
-			ps.println("================================================");
+			ps.println("/*--------------------------------------------+|");
+			ps.println("|| test 2                                     ||");
+			ps.print("|+--------------------------------------------*/");
 			logger.info("{}", ps);
 		}
-		if (xATerminator instanceof GeronimoTransactionManager) {
-			logger.info("Total Commits: {}",
-					((GeronimoTransactionManager) xATerminator)
-							.getTotalCommits());
-		}
-		logger.info("{}", xATerminator);
-		xATerminator.commit(wtx.getXid(), true);
-		if (xATerminator instanceof GeronimoTransactionManager) {
-			logger.info("Total Commits: {}",
-					((GeronimoTransactionManager) xATerminator)
-							.getTotalCommits());
-		}
-		if (logger.isDebugEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
-			ps.println();
-			ps.println("================================================");
-			ps.println("= Final del  commit");
-			ps.print("================================================");
-			logger.info("{}", ps);
-		}
-		if (logger.isDebugEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
-			ps.println();
-			ps.println("================================================");
-			ps.println("= Reproducimos un  commit con XAResource       =");
-			ps.println("================================================");
-			logger.info("{}", ps);
-		}
-		wtx = ac.processInbound(xa);
-		logger.info("Esperando el Release el trabajo {}", wtx);
-		wtx.getLatch().await();
-		if (logger.isDebugEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
-			ps.println();
-			ps.println("================================================");
-			ps.println("= Reproducimos un commit                       =");
-			ps.print("================================================");
-			logger.info("{}", ps);
-		}
-		logger.info("{}", xATerminator);
-		if (xATerminator instanceof GeronimoTransactionManager) {
-			logger.info("Total Commits: {}",
-					((GeronimoTransactionManager) xATerminator)
-							.getTotalCommits());
-		}
-		xATerminator.commit(wtx.getXid(), true);
-		logger.info("{}", xATerminator);
-		if (xATerminator instanceof GeronimoTransactionManager) {
-			logger.info("Total Commits: {}",
-					((GeronimoTransactionManager) xATerminator)
-							.getTotalCommits());
-		}
-		if (logger.isDebugEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
-			ps.println();
-			ps.println("================================================");
-			ps.println("= Final del  commit                            =");
-			ps.print("================================================");
-			logger.info("{}", ps);
-		}
-		logger.info("Liberado latch!!!");
-		xa = null;
+		this.ctx.getBean(TransactionManager.class).begin();
+		final IConnectionFactoryDummy dfi = this.ctx.getBean(
+				"connectionFactory0", IConnectionFactoryDummy.class);
+		IManagedDriverDummy con = dfi.getConnection();
+		Assert.assertEquals("Mal inicializado", 1, con.getAtomicInteger()
+				.intValue());
+		String msg = "hola";
+		String aux = con.echo(msg);
+		Assert.assertEquals("Error en retorno", aux, msg);
+		Assert.assertEquals("Error en tipo", 1, con.getAtomicInteger()
+				.intValue());
+		con.close();
+		this.ctx.getBean(TransactionManager.class).commit();
+		Assert.assertEquals("Error en tipo", 0, con.getAtomicInteger()
+				.intValue());
+	}
+
+	void doTest3() throws Exception {
+		this.ctx.getBean(TransactionManager.class).begin();
+		final IConnectionFactoryDummy dfi = this.ctx.getBean(
+				"connectionFactory0", IConnectionFactoryDummy.class);
+		IManagedDriverDummy con = dfi.getConnection();
+		Assert.assertEquals("Mal inicializado", 1, con.getAtomicInteger()
+				.intValue());
+		String msg = "hola";
+		String aux = con.echo(msg);
+		Assert.assertEquals("Error en retorno", aux, msg);
+		Assert.assertEquals("Error en tipo", 1, con.getAtomicInteger()
+				.intValue());
+		con.close();
+		this.ctx.getBean(TransactionManager.class).rollback();
+		Assert.assertEquals("Error en tipo", 0, con.getAtomicInteger()
+				.intValue());
+	}
+
+	void doTest4() throws Exception {
+		this.ctx.getBean(TransactionManager.class).begin();
+		final IConnectionFactoryDummy dfi = this.ctx.getBean(
+				"connectionFactory0", IConnectionFactoryDummy.class);
+		IManagedDriverDummy con = dfi.getConnection();
+		Assert.assertEquals("Mal inicializado", 1, con.getAtomicInteger()
+				.intValue());
+		String msg = "hola";
+		String aux = con.echo(msg);
+		Assert.assertEquals("Error en retorno", aux, msg);
+		Assert.assertEquals("Error en tipo", 1, con.getAtomicInteger()
+				.intValue());
+		con.close();
+		con = dfi.getConnection();
+		Assert.assertEquals("Mal inicializado", 1, con.getAtomicInteger()
+				.intValue());
+		msg = "hola";
+		aux = con.echo(msg);
+		Assert.assertEquals("Error en retorno", aux, msg);
+		Assert.assertEquals("Error en tipo", 1, con.getAtomicInteger()
+				.intValue());
+		con.close();
+		this.ctx.getBean(TransactionManager.class).commit();
+		Assert.assertEquals("Error en tipo", 0, con.getAtomicInteger()
+				.intValue());
 	}
 
 	/**

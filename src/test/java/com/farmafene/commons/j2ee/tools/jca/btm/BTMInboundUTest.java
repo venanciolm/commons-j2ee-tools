@@ -25,9 +25,6 @@ package com.farmafene.commons.j2ee.tools.jca.btm;
 
 import java.sql.SQLException;
 
-import javax.resource.spi.work.WorkException;
-import javax.transaction.xa.XAException;
-
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -57,12 +54,12 @@ public class BTMInboundUTest implements InitializingBean {
 
 	@BeforeClass
 	public static void beforeClass() throws SQLException {
-		logger.info("init!");
+		logger.info("Init!");
 	}
 
 	@AfterClass
 	public static void afterClass() {
-		logger.info("destroying!");
+		logger.info("Destroy!");
 		CTX.close();
 	}
 
@@ -76,9 +73,9 @@ public class BTMInboundUTest implements InitializingBean {
 		if (logger.isInfoEnabled()) {
 			StringPrintStream ps = new StringPrintStream();
 			ps.println();
-			ps.println("================================================");
-			ps.println("= Begin of Test                                =");
-			ps.print("================================================");
+			ps.println("/*--------------------------------------------+|");
+			ps.println("|| Begin of Test                              ||");
+			ps.print("+---------------------------------------------*/");
 			logger.info("{}", ps);
 		}
 		Assert.assertNotNull(this.ctx);
@@ -86,10 +83,10 @@ public class BTMInboundUTest implements InitializingBean {
 	}
 
 	@Test
-	public void test() throws WorkException, InterruptedException, XAException {
+	public void test() throws Exception {
 		InboundBean bean = new InboundBean();
 		bean.setCtx(ctx);
-		bean.aa_cretateFactory();
-		bean.cretateFactory();
+		bean.initTest();
+		bean.inBoundTest();
 	}
 }

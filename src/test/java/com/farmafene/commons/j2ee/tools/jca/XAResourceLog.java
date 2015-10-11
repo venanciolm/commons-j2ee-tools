@@ -23,8 +23,6 @@
  */
 package com.farmafene.commons.j2ee.tools.jca;
 
-import java.util.UUID;
-
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
@@ -36,12 +34,15 @@ import com.farmafene.commons.j2ee.tools.jca.common.StringPrintStream;
 
 public class XAResourceLog implements XAResource {
 
-	private static final Logger logger = LoggerFactory.getLogger(XAResourceLog.class);
-	private final UUID uuid;
+	private static final Logger logger = LoggerFactory
+			.getLogger(XAResourceLog.class);
+	private Xid xId;
 	private int transactionTimeout = 120;
+	private ActivationSpecLog activationSpec;
 
-	public XAResourceLog() {
-		this.uuid = UUID.randomUUID();
+	public XAResourceLog(Xid xId, ActivationSpecLog activationSpec) {
+		this.xId = xId;
+		this.activationSpec = activationSpec;
 	}
 
 	/**
@@ -53,7 +54,8 @@ public class XAResourceLog implements XAResource {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
+		result = prime * result
+				+ ((this.xId == null) ? 0 : this.xId.hashCode());
 		return result;
 	}
 
@@ -74,11 +76,11 @@ public class XAResourceLog implements XAResource {
 			return false;
 		}
 		final XAResourceLog other = (XAResourceLog) obj;
-		if (this.uuid == null) {
-			if (other.uuid != null) {
+		if (this.xId == null) {
+			if (other.xId != null) {
 				return false;
 			}
-		} else if (!this.uuid.equals(other.uuid)) {
+		} else if (!this.xId.equals(other.xId)) {
 			return false;
 		}
 		return true;
@@ -93,7 +95,7 @@ public class XAResourceLog implements XAResource {
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append(getClass().getSimpleName()).append("={");
-		sb.append(this.uuid);
+		sb.append(this.xId);
 		sb.append(", transactionTimeout=").append(this.transactionTimeout);
 		sb.append("}");
 		return sb.toString();
@@ -106,19 +108,23 @@ public class XAResourceLog implements XAResource {
 	 *      boolean)
 	 */
 	@Override
-	public void commit(final Xid xid, final boolean onePhase) throws XAException {
+	public void commit(final Xid xid, final boolean onePhase)
+			throws XAException {
 		if (logger.isInfoEnabled()) {
 			final StringPrintStream ps = new StringPrintStream();
 			ps.println();
-			ps.println("/*--------------------------------------------------+\\");
-			ps.println("|| Commit:                                           ||");
+			ps.println("/*--------------------------------------------------+|");
+			ps.println("|| Commit:                                          ||");
 			ps.print("|| OnePhase: ");
 			ps.println(onePhase);
 			ps.print("|| Xid: ");
 			ps.println(xid);
-			ps.print("\\+--------------------------------------------------*/");
+			ps.print("|| Xid: ");
+			ps.println(xId);
+			ps.println("|+--------------------------------------------------*/");
 			logger.info("{}", ps);
 		}
+		this.activationSpec.getXAResources().remove(xId);
 	}
 
 	/**
@@ -131,13 +137,15 @@ public class XAResourceLog implements XAResource {
 		if (logger.isInfoEnabled()) {
 			final StringPrintStream ps = new StringPrintStream();
 			ps.println();
-			ps.println("/*--------------------------------------------------+\\");
+			ps.println("/*--------------------------------------------------+|");
 			ps.println("|| End:                                             ||");
 			ps.print("|| Flags: ");
 			ps.println(flags);
 			ps.print("|| Xid: ");
 			ps.println(xid);
-			ps.print("\\+--------------------------------------------------*/");
+			ps.print("|| Xid: ");
+			ps.println(xId);
+			ps.println("|+--------------------------------------------------*/");
 			logger.info("{}", ps);
 		}
 	}
@@ -152,13 +160,16 @@ public class XAResourceLog implements XAResource {
 		if (logger.isInfoEnabled()) {
 			final StringPrintStream ps = new StringPrintStream();
 			ps.println();
-			ps.println("/*--------------------------------------------------+\\");
-			ps.println("|| Forget:                                           ||");
+			ps.println("/*--------------------------------------------------+|");
+			ps.println("|| Forget:                                          ||");
 			ps.print("|| Xid: ");
 			ps.println(xid);
-			ps.print("\\+--------------------------------------------------*/");
+			ps.print("|| Xid: ");
+			ps.println(xId);
+			ps.println("|+--------------------------------------------------*/");
 			logger.info("{}", ps);
 		}
+		this.activationSpec.getXAResources().remove(xId);
 	}
 
 	/**
@@ -193,11 +204,13 @@ public class XAResourceLog implements XAResource {
 		if (logger.isInfoEnabled()) {
 			final StringPrintStream ps = new StringPrintStream();
 			ps.println();
-			ps.println("/*--------------------------------------------------+\\");
-			ps.println("|| Prepare:                                          ||");
+			ps.println("/*--------------------------------------------------+|");
+			ps.println("|| Prepare:                                         ||");
 			ps.print("|| Xid: ");
 			ps.println(xid);
-			ps.print("\\+--------------------------------------------------*/");
+			ps.print("|| Xid: ");
+			ps.println(xId);
+			ps.println("|+--------------------------------------------------*/");
 			logger.info("{}", ps);
 		}
 		return XA_OK;
@@ -213,11 +226,11 @@ public class XAResourceLog implements XAResource {
 		if (logger.isInfoEnabled()) {
 			final StringPrintStream ps = new StringPrintStream();
 			ps.println();
-			ps.println("/*--------------------------------------------------+\\");
-			ps.println("|| Recover:                                             ||");
+			ps.println("/*--------------------------------------------------+|");
+			ps.println("|| Recover:                                         ||");
 			ps.print("|| Flag: ");
 			ps.println(flag);
-			ps.print("\\+--------------------------------------------------*/");
+			ps.println("|+--------------------------------------------------*/");
 			logger.info("{}", ps);
 		}
 		return new Xid[] {};
@@ -233,13 +246,16 @@ public class XAResourceLog implements XAResource {
 		if (logger.isInfoEnabled()) {
 			final StringPrintStream ps = new StringPrintStream();
 			ps.println();
-			ps.println("/*--------------------------------------------------+\\");
-			ps.println("|| Rollback:                                         ||");
+			ps.println("/*--------------------------------------------------+|");
+			ps.println("|| Rollback:                                        ||");
 			ps.print("|| Xid: ");
 			ps.println(xid);
-			ps.print("\\+--------------------------------------------------*/");
+			ps.print("|| Xid: ");
+			ps.println(xId);
+			ps.println("|+--------------------------------------------------*/");
 			logger.info("{}", ps);
 		}
+		this.activationSpec.getXAResources().remove(xId);
 	}
 
 	/**
@@ -264,14 +280,17 @@ public class XAResourceLog implements XAResource {
 		if (logger.isInfoEnabled()) {
 			final StringPrintStream ps = new StringPrintStream();
 			ps.println();
-			ps.println("/*--------------------------------------------------+\\");
-			ps.println("|| Start:                                            ||");
+			ps.println("/*--------------------------------------------------+|");
+			ps.println("|| Start:                                           ||");
 			ps.print("|| Flags: ");
 			ps.println(flags);
 			ps.print("|| Xid: ");
 			ps.println(xid);
-			ps.print("\\+--------------------------------------------------*/");
+			ps.print("|| Xid: ");
+			ps.println(xId);
+			ps.println("|+--------------------------------------------------*/");
 			logger.info("{}", ps);
 		}
+		this.activationSpec.getXAResources().remove(xId);
 	}
 }

@@ -23,8 +23,8 @@
  */
 package com.farmafene.commons.j2ee.tools.jca.btm;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.resource.spi.XATerminator;
 import javax.transaction.HeuristicMixedException;
@@ -49,7 +49,7 @@ public class BTMXATerminator extends BTMTransactionSynchronizationRegistry
 	private final Set<Xid> prepared;
 
 	public BTMXATerminator() {
-		this.prepared = new HashSet<Xid>();
+		this.prepared = new CopyOnWriteArraySet<Xid>();
 	}
 
 	/**

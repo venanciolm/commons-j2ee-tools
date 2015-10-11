@@ -21,19 +21,16 @@
  * OF CONTRACT, TORT OR OTHERWISE,  ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.farmafene.commons.j2ee.tools.jca;
+package com.farmafene.commons.j2ee.tools.jca.spi;
 
-import javax.transaction.RollbackException;
-import javax.transaction.Status;
-import javax.transaction.SystemException;
-import javax.transaction.TransactionManager;
-import javax.transaction.xa.XAResource;
+import java.io.Serializable;
 
-public class DefaultEnlistXAResource implements IEnlistXAResource {
+import javax.resource.spi.ConnectionRequestInfo;
 
-	private TransactionManager transactionManager;
-
-	public DefaultEnlistXAResource() {
+@SuppressWarnings("serial")
+public abstract class ConnectionRequestInfoSPI implements
+		ConnectionRequestInfo, Serializable {
+	public ConnectionRequestInfoSPI() {
 	}
 
 	/**
@@ -44,45 +41,25 @@ public class DefaultEnlistXAResource implements IEnlistXAResource {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(getClass().getSimpleName()).append("={");
-		sb.append("}");
+		sb.append(getClass().getSimpleName()).append("=[");
+		sb.append("]");
 		return sb.toString();
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see com.farmafene.commons.jca.IEnlistXAResource#enlist(javax.transaction.xa.XAResource)
-	 */
-	@Override
-	public void enlist(XAResource xaResource) throws IllegalStateException,
-			RollbackException, SystemException {
-		transactionManager.getTransaction().enlistResource(xaResource);
-	}
-
-	/**
-	 * Establece el TransactionManager
-	 * 
-	 * @param transactionManager
-	 *            transactionManager a establecer
-	 */
-	public void setTransactionManager(TransactionManager transactionManager) {
-		this.transactionManager = transactionManager;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @see com.farmafene.commons.jca.IEnlistXAResource#isInTransaction()
+	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
-	public boolean isInTransaction() {
-		boolean isInTransaction = false;
-		try {
-			return Status.STATUS_ACTIVE == transactionManager.getStatus();
-		} catch (SystemException e) {
-			// do nothing
-		}
-		return isInTransaction;
-	}
+	public abstract int hashCode();
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public abstract boolean equals(Object obj);
+
 }

@@ -126,14 +126,6 @@ public class BTMConnectionManager extends ResourceBean implements
 	 */
 	@Override
 	public XAResourceHolderState startRecovery() throws RecoveryException {
-		if (logger.isDebugEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
-			ps.println();
-			ps.println("/*--------------------------------------------------+\\");
-			ps.println("|| startRecovery                                    ||");
-			ps.print("\\+--------------------------------------------------*/");
-			logger.debug("{}", ps);
-		}
 		try {
 			this.revoveryXAStatefulHolder = createPooledConnection(null, this);
 			this.revoveryXAStatefulHolder
@@ -145,11 +137,11 @@ public class BTMConnectionManager extends ResourceBean implements
 		} catch (final Exception e) {
 			StringPrintStream ps = new StringPrintStream();
 			ps.println();
-			ps.println("/*--------------------------------------------------+\\");
+			ps.println("/*--------------------------------------------------+|");
 			ps.println("|| startRecovery                                    ||");
 			ps.println("|| Error:                                           ||");
 			e.printStackTrace(ps);
-			ps.print("\\+--------------------------------------------------*/");
+			ps.print("|+--------------------------------------------------*/");
 			logger.error("{}", ps);
 			throw new RecoveryException("startRecovery()", e);
 		}
@@ -162,25 +154,17 @@ public class BTMConnectionManager extends ResourceBean implements
 	 */
 	@Override
 	public void endRecovery() throws RecoveryException {
-		if (logger.isDebugEnabled()) {
-			StringPrintStream ps = new StringPrintStream();
-			ps.println();
-			ps.println("/*--------------------------------------------------+\\");
-			ps.println("|| endRecovery                                      ||");
-			ps.print("\\+--------------------------------------------------*/");
-			logger.debug("{}", ps);
-		}
 		try {
 			this.recoveryXAResourceHolder.close();
 			this.revoveryXAStatefulHolder.close();
 		} catch (final Exception e) {
 			StringPrintStream ps = new StringPrintStream();
 			ps.println();
-			ps.println("/*--------------------------------------------------+\\");
+			ps.println("/*--------------------------------------------------+|");
 			ps.println("|| endRecovery                                      ||");
 			ps.println("|| Error:                                           ||");
 			e.printStackTrace(ps);
-			ps.print("\\+--------------------------------------------------*/");
+			ps.print("|+--------------------------------------------------*/");
 			logger.error("{}", ps);
 			throw new RecoveryException("endRecovery()", e);
 		}
@@ -226,7 +210,6 @@ public class BTMConnectionManager extends ResourceBean implements
 		this.xaPool.close();
 		this.xaPool = null;
 		ResourceRegistrar.unregister(this);
-
 	}
 
 	/**
@@ -242,12 +225,9 @@ public class BTMConnectionManager extends ResourceBean implements
 		try {
 			final ManagedConnection mc = this.managedConnectionFactory
 					.createManagedConnection(null, getConnectionRequestInfo());
-			if (logger.isDebugEnabled()) {
-				logger.debug("Creada: " + mc);
-			}
 			w = new XAStatefulHolderWrapper(mc, this);
 		} catch (final ResourceException e) {
-			e.printStackTrace();
+			logger.error("Error in create pooled connection", e);
 		}
 		return w;
 	}
