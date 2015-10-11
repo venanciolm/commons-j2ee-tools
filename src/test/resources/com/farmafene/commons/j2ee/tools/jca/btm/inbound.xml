@@ -36,8 +36,8 @@
 	<bean id="connectionFactory0"
 		class="com.farmafene.commons.j2ee.tools.jca.btm.BTMConectionFactoryFactoryBean">
 		<property name="name" value="managedConnectionFactory0" />
-		<property name="minPoolSize" value="5" />
-		<property name="maxPoolSize" value="5" />
+		<property name="minPoolSize" value="1" />
+		<property name="maxPoolSize" value="1" />
 		<property name="managedConnectionFactory" ref="managedConnectionFactory0" />
 	</bean>
 

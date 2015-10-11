@@ -32,10 +32,12 @@
         http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
 	<bean id="connectionFactory1"
-			class="com.farmafene.commons.j2ee.tools.jca.geronimo3.GeronimoConnectionFactoryFactoryBean">
+		class="com.farmafene.commons.j2ee.tools.jca.geronimo3.GeronimoConnectionFactoryFactoryBean">
 		<property name="transactionManager" ref="transactionManager" />
 		<property name="partitionStrategy" value="none" />
 		<property name="transaction" value="xa" />
+		<property name="poolMaxSize" value="1" />
+		<property name="poolMinSize" value="1" />
 		<property name="managedConnectionFactory" ref="managedConnectionFactory1" />
 	</bean>
 	<bean id="connectionFactory2"
@@ -43,6 +45,8 @@
 		<property name="transactionManager" ref="transactionManager" />
 		<property name="partitionStrategy" value="none" />
 		<property name="transaction" value="xa" />
+		<property name="poolMaxSize" value="1" />
+		<property name="poolMinSize" value="1" />
 		<property name="managedConnectionFactory" ref="managedConnectionFactory2" />
 	</bean>
 	<bean id="connectionFactory3"
@@ -50,6 +54,9 @@
 		<property name="transactionManager" ref="transactionManager" />
 		<property name="partitionStrategy" value="none" />
 		<property name="transaction" value="xa" />
+		<property name="poolMaxSize" value="1" />
+		<property name="poolMinSize" value="1" />
+
 		<property name="managedConnectionFactory" ref="managedConnectionFactory2" />
 	</bean>
 </beans>
