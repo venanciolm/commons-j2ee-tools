@@ -287,7 +287,8 @@
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-test</artifactId>
 				<version>${org.springframework.VERSION}</version>
-				<scope>test</scope>
+				<scope>provided</scope>
+				<optional>true</optional>
 				<exclusions>
 					<exclusion>
 						<groupId>commons-logging</groupId>
