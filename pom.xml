@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.farmafene.commons</groupId>
 	<artifactId>commons-j2ee-tools</artifactId>
@@ -36,6 +37,8 @@
 		<wagon-webdav-jackrabbit>2.9</wagon-webdav-jackrabbit>
 		<jdk.version>1.7</jdk.version>
 		<maven-scm-plugin>1.9.4</maven-scm-plugin>
+		<org.apache.activemq.VERSION>5.7.0</org.apache.activemq.VERSION>
+		<xbean-spring.VERSION>3.7</xbean-spring.VERSION>
 		<!-- -->
 		<!-- -->
 		<!-- Project Dependencies -->
@@ -239,6 +242,28 @@
 				</exclusions>
 			</dependency>
 			<dependency>
+				<groupId>org.apache.activemq</groupId>
+				<artifactId>activemq-core</artifactId>
+				<version>${org.apache.activemq.VERSION}</version>
+				<scope>compile</scope>
+				<type>jar</type>
+				<optional>true</optional>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.xbean</groupId>
+				<artifactId>xbean-spring</artifactId>
+				<version>${xbean-spring.VERSION}</version>
+				<scope>compile</scope>
+				<type>jar</type>
+				<optional>true</optional>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
 				<version>${org.springframework.VERSION}</version>
@@ -322,6 +347,14 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xbean</groupId>
+			<artifactId>xbean-spring</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
