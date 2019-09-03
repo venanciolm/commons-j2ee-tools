@@ -1,8 +1,8 @@
-#commons-j2ee-tools
+# commons-j2ee-tools
 
 Tools for Java EE
 
-##Features
+## Features
 
 - [X] BTM XATerminator
 - [X] Java EE Connector Architecture
