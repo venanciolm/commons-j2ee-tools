@@ -57,7 +57,7 @@ public class XAStatefulHolderWrapper extends AbstractXAResourceHolder
 	private final List<XAResourceHolder> holders;
 	private int usageCount;
 	private Date lastReleaseDate;
-	private Date acquisitionDate;
+	private Date acquisitionDate = new Date();
 	private boolean fail = false;
 
 	public XAStatefulHolderWrapper() {
