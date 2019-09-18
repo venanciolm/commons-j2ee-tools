@@ -44,6 +44,8 @@ import org.springframework.beans.factory.InitializingBean;
 
 public class GeronimoConnectionFactoryFactoryBean implements FactoryBean<Object>, InitializingBean, DisposableBean {
 
+	private Class<?> factoryClass = Object.class;
+	
 	private RecoverableTransactionManager transactionManager;
 	// : none, local, xa
 	private String transaction;
@@ -126,7 +128,7 @@ public class GeronimoConnectionFactoryFactoryBean implements FactoryBean<Object>
 	 */
 	@Override
 	public Class<?> getObjectType() {
-		return Object.class;
+		return factoryClass;
 	}
 
 	/**
@@ -343,5 +345,19 @@ public class GeronimoConnectionFactoryFactoryBean implements FactoryBean<Object>
 	 */
 	public void setManagedConnectionFactory(final ManagedConnectionFactory managedConnectionFactory) {
 		this.managedConnectionFactory = managedConnectionFactory;
+	}
+
+	/**
+	 * @return the factoryClass
+	 */
+	public Class<?> getFactoryClass() {
+		return factoryClass;
+	}
+
+	/**
+	 * @param factoryClass the factoryClass to set
+	 */
+	public void setFactoryClass(Class<?> factoryClass) {
+		this.factoryClass = factoryClass;
 	}
 }
