@@ -1,13 +1,13 @@
-#commons-j2ee-tools
+# commons-j2ee-tools
 
 Tools for Java EE
 
-##Features
+## Features
 
-- [X] BTM XATerminator
-- [X] Java EE Connector Architecture
-- [X] Integration with genonimo Work Manager
-- [X] Integration with geronimo Transaction manager
-- [X] JCA Inbound
-- [X] JCA Outbound
-- [X] Spring integration 
+- [x] BTM XATerminator
+- [x] Java EE Connector Architecture
+- [x] Integration with genonimo Work Manager
+- [x] Integration with geronimo Transaction manager
+- [x] JCA Inbound
+- [x] JCA Outbound
+- [x] Spring integration 
