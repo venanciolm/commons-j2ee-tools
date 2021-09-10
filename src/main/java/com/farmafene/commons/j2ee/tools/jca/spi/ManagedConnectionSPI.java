@@ -54,8 +54,7 @@ import com.farmafene.commons.j2ee.tools.jca.IManagedDriver;
 public abstract class ManagedConnectionSPI<Driver extends IManagedDriver, CRI extends ConnectionRequestInfo, MCMD extends ManagedConnectionMetaDataSPI>
 		implements ManagedConnection, ICloseable {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(ManagedConnectionSPI.class);
+	private static final Logger logger = LoggerFactory.getLogger(ManagedConnectionSPI.class);
 	private PrintWriter logWriter;
 	private CRI connectionRequestInfo;
 	private Set<Driver> connectionHandlers;
@@ -100,54 +99,44 @@ public abstract class ManagedConnectionSPI<Driver extends IManagedDriver, CRI ex
 	 * 
 	 * @param xid
 	 * @param flag
-	 * @throws IOException
-	 *             Communication failure
-	 * @throws XAException
-	 *             An error has occurred. Possible exceptions are XA_RB*,
-	 *             XAER_RMERR, XAER_RMFAIL, XAER_DUPID, XAER_OUTSIDE, XAER_NOTA,
-	 *             XAER_INVAL, or XAER_PROTO.
+	 * @throws IOException Communication failure
+	 * @throws XAException An error has occurred. Possible exceptions are XA_RB*,
+	 *                     XAER_RMERR, XAER_RMFAIL, XAER_DUPID, XAER_OUTSIDE,
+	 *                     XAER_NOTA, XAER_INVAL, or XAER_PROTO.
 	 */
-	protected abstract void doStart(Xid xid, int flag) throws IOException,
-			XAException;
+	protected abstract void doStart(Xid xid, int flag) throws IOException, XAException;
 
 	/**
 	 * Realiza el commit
 	 * 
 	 * @param id
 	 * @param onePhase
-	 * @throws IOException
-	 *             Communication failure
-	 * @throws XAException
-	 *             - An error has occurred. Possible XAException values are
-	 *             XAER_RMERR, XAER_RMFAIL, XAER_NOTA, XAER_INVAL, XAER_PROTO,
-	 *             or XA_RB*.
+	 * @throws IOException Communication failure
+	 * @throws XAException - An error has occurred. Possible XAException values are
+	 *                     XAER_RMERR, XAER_RMFAIL, XAER_NOTA, XAER_INVAL,
+	 *                     XAER_PROTO, or XA_RB*.
 	 */
-	protected abstract void doComit(Xid id, boolean onePhase)
-			throws IOException, XAException;
+	protected abstract void doComit(Xid id, boolean onePhase) throws IOException, XAException;
 
 	/**
 	 * Realiza el Forget
 	 * 
 	 * @param xId
 	 * 
-	 * @throws IOException
-	 *             Communication failure
-	 * @throws XAException
-	 *             - An error has occurred. Possible exception values are
-	 *             XAER_RMERR, XAER_RMFAIL, XAER_NOTA, XAER_INVAL, or
-	 *             XAER_PROTO.
+	 * @throws IOException Communication failure
+	 * @throws XAException - An error has occurred. Possible exception values are
+	 *                     XAER_RMERR, XAER_RMFAIL, XAER_NOTA, XAER_INVAL, or
+	 *                     XAER_PROTO.
 	 */
 	protected abstract void doForget(Xid xId) throws IOException, XAException;
 
 	/**
 	 * 
 	 * @param id
-	 * @throws IOException
-	 *             Communication failure
-	 * @throws XAException
-	 *             - An error has occurred. Possible exception values are:
-	 *             XA_RB*, XAER_RMERR, XAER_RMFAIL, XAER_NOTA, XAER_INVAL, or
-	 *             XAER_PROTO.
+	 * @throws IOException Communication failure
+	 * @throws XAException - An error has occurred. Possible exception values are:
+	 *                     XA_RB*, XAER_RMERR, XAER_RMFAIL, XAER_NOTA, XAER_INVAL,
+	 *                     or XAER_PROTO.
 	 */
 	protected abstract void doPrepare(Xid id) throws IOException, XAException;
 
@@ -155,35 +144,31 @@ public abstract class ManagedConnectionSPI<Driver extends IManagedDriver, CRI ex
 	 * Realiza el rollback
 	 * 
 	 * @param id
-	 * @throws IOException
-	 *             Communication failure
-	 * @throws XAException
-	 *             - An error has occurred. Possible XAExceptions are
-	 *             XA_HEURHAZ, XA_HEURCOM, XA_HEURRB, XA_HEURMIX, XAER_RMERR,
-	 *             XAER_RMFAIL, XAER_NOTA, XAER_INVAL, or XAER_PROTO. If the
-	 *             transaction branch is already marked rollback-only the
-	 *             resource manager may throw one of the XA_RB* exceptions. Upon
-	 *             return, the resource manager has rolled back the branch's
-	 *             work and has released all held resources.
+	 * @throws IOException Communication failure
+	 * @throws XAException - An error has occurred. Possible XAExceptions are
+	 *                     XA_HEURHAZ, XA_HEURCOM, XA_HEURRB, XA_HEURMIX,
+	 *                     XAER_RMERR, XAER_RMFAIL, XAER_NOTA, XAER_INVAL, or
+	 *                     XAER_PROTO. If the transaction branch is already marked
+	 *                     rollback-only the resource manager may throw one of the
+	 *                     XA_RB* exceptions. Upon return, the resource manager has
+	 *                     rolled back the branch's work and has released all held
+	 *                     resources.
 	 */
 	protected abstract void doRollback(Xid id) throws IOException, XAException;
 
 	/**
 	 * 
-	 * @param flag
-	 *            - One of TMSTARTRSCAN, TMENDRSCAN, TMNOFLAGS. TMNOFLAGS must
-	 *            be used when no other flags are set in the parameter. These
-	 *            constants are defined in javax.transaction.xa.XAResource
-	 *            interface.
+	 * @param flag - One of TMSTARTRSCAN, TMENDRSCAN, TMNOFLAGS. TMNOFLAGS must be
+	 *             used when no other flags are set in the parameter. These
+	 *             constants are defined in javax.transaction.xa.XAResource
+	 *             interface.
 	 * @return The resource manager returns zero or more XIDs of the transaction
-	 *         branches that are currently in a prepared or heuristically
-	 *         completed state. If an error occurs during the operation, the
-	 *         resource manager should throw the appropriate XAException.
-	 * @throws IOException
-	 *             Communication failure
-	 * @throws XAException
-	 *             - An error has occurred. Possible values are XAER_RMERR,
-	 *             XAER_RMFAIL, XAER_INVAL, and XAER_PROTO.
+	 *         branches that are currently in a prepared or heuristically completed
+	 *         state. If an error occurs during the operation, the resource manager
+	 *         should throw the appropriate XAException.
+	 * @throws IOException Communication failure
+	 * @throws XAException - An error has occurred. Possible values are XAER_RMERR,
+	 *                     XAER_RMFAIL, XAER_INVAL, and XAER_PROTO.
 	 */
 	protected Xid[] doRecover(int flag) throws IOException, XAException {
 		List<Xid> aux = new ArrayList<Xid>();
@@ -197,15 +182,12 @@ public abstract class ManagedConnectionSPI<Driver extends IManagedDriver, CRI ex
 	/**
 	 * 
 	 * @param xid
-	 * @param flags
-	 *            - One of TMSUCCESS, TMFAIL, or TMSUSPEND.
+	 * @param flags - One of TMSUCCESS, TMFAIL, or TMSUSPEND.
 	 * 
-	 * @throws IOException
-	 *             Communication failure
-	 * @throws XAException
-	 *             - An error has occurred. Possible XAException values are
-	 *             XAER_RMERR, XAER_RMFAIL, XAER_NOTA, XAER_INVAL, XAER_PROTO,
-	 *             or XA_RB*.
+	 * @throws IOException Communication failure
+	 * @throws XAException - An error has occurred. Possible XAException values are
+	 *                     XAER_RMERR, XAER_RMFAIL, XAER_NOTA, XAER_INVAL,
+	 *                     XAER_PROTO, or XA_RB*.
 	 */
 	protected void doEnd(Xid xid, int flags) throws IOException, XAException {
 		switch (flags) {
@@ -232,10 +214,7 @@ public abstract class ManagedConnectionSPI<Driver extends IManagedDriver, CRI ex
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime
-				* result
-				+ ((connectionRequestInfo == null) ? 0 : connectionRequestInfo
-						.hashCode());
+		result = prime * result + ((connectionRequestInfo == null) ? 0 : connectionRequestInfo.hashCode());
 		result = prime * result + ((uUID == null) ? 0 : uUID.hashCode());
 		return result;
 	}
@@ -278,8 +257,7 @@ public abstract class ManagedConnectionSPI<Driver extends IManagedDriver, CRI ex
 		StringBuilder sb = new StringBuilder();
 		sb.append(getClass().getSimpleName()).append("=[");
 		sb.append("UUID=").append(this.uUID);
-		sb.append(", with=").append(connectionHandlers.size())
-				.append(" active handlers");
+		sb.append(", with=").append(connectionHandlers.size()).append(" active handlers");
 		sb.append(", ").append(this.connectionRequestInfo);
 		sb.append("]");
 		return sb.toString();
@@ -292,8 +270,7 @@ public abstract class ManagedConnectionSPI<Driver extends IManagedDriver, CRI ex
 	 *      javax.resource.spi.ConnectionRequestInfo)
 	 */
 	@Override
-	public Object getConnection(Subject subject,
-			ConnectionRequestInfo cxRequestInfo) throws ResourceException {
+	public Object getConnection(Subject subject, ConnectionRequestInfo cxRequestInfo) throws ResourceException {
 		ConnectionSPI<Driver> con = new ConnectionSPI<Driver>();
 		con.setManagedConnection(this);
 		Driver driver = pf.newInstance(con);
@@ -343,11 +320,10 @@ public abstract class ManagedConnectionSPI<Driver extends IManagedDriver, CRI ex
 	@Override
 	public void associateConnection(Object connection) throws ResourceException {
 		@SuppressWarnings("unchecked")
-		ConnectionSPI<Driver> con = (ConnectionSPI<Driver>) Proxy
-				.getInvocationHandler(connection);
+		ConnectionSPI<Driver> con = (ConnectionSPI<Driver>) Proxy.getInvocationHandler(connection);
 		XAResourceImpl<Driver> xaRes = con.getManagedConnection().xaResource;
 		LocalTransactionImpl<Driver> localRes = con.getManagedConnection().localTx;
-		con.getManagedConnection().connectionHandlers.remove(con);
+		con.getManagedConnection().connectionHandlers.remove((Object)con);
 		localRes.setManagedConnection(this);
 		xaRes.setManagedConnection(this);
 		con.setManagedConnection(this);
@@ -596,8 +572,7 @@ public abstract class ManagedConnectionSPI<Driver extends IManagedDriver, CRI ex
 	@Override
 	public XAResource getXAResource() throws ResourceException {
 		if (!isSupportedXATransactions()) {
-			ResourceException e = new NotSupportedException(
-					"XA Transactions not Supported!");
+			ResourceException e = new NotSupportedException("XA Transactions not Supported!");
 			throw e;
 		}
 		return xaResource;
@@ -611,8 +586,7 @@ public abstract class ManagedConnectionSPI<Driver extends IManagedDriver, CRI ex
 	@Override
 	public LocalTransaction getLocalTransaction() throws ResourceException {
 		if (!isSupportedLocalTransactions()) {
-			ResourceException e = new NotSupportedException(
-					"Local Transactions not Supported!");
+			ResourceException e = new NotSupportedException("Local Transactions not Supported!");
 			throw e;
 		}
 		return localTx;
@@ -633,8 +607,7 @@ public abstract class ManagedConnectionSPI<Driver extends IManagedDriver, CRI ex
 	}
 
 	/**
-	 * @param connectionRequestInfo
-	 *            the connectionRequestInfo to set
+	 * @param connectionRequestInfo the connectionRequestInfo to set
 	 */
 	public void setConnectionRequestInfo(CRI connectionRequestInfo) {
 		this.connectionRequestInfo = connectionRequestInfo;
@@ -678,8 +651,7 @@ public abstract class ManagedConnectionSPI<Driver extends IManagedDriver, CRI ex
 	}
 
 	/**
-	 * @param supportedXATransactions
-	 *            the supportedXATransactions to set
+	 * @param supportedXATransactions the supportedXATransactions to set
 	 */
 	public void setSupportedXATransactions(boolean supportedXATransactions) {
 		this.supportedXATransactions = supportedXATransactions;
@@ -693,8 +665,7 @@ public abstract class ManagedConnectionSPI<Driver extends IManagedDriver, CRI ex
 	}
 
 	/**
-	 * @param supportedLocalTransactions
-	 *            the supportedLocalTransactions to set
+	 * @param supportedLocalTransactions the supportedLocalTransactions to set
 	 */
 	public void setSupportedLocalTransactions(boolean supportedLocalTransactions) {
 		this.supportedLocalTransactions = supportedLocalTransactions;
@@ -719,8 +690,7 @@ public abstract class ManagedConnectionSPI<Driver extends IManagedDriver, CRI ex
 	}
 
 	/**
-	 * @param readOnly
-	 *            the readOnly to set
+	 * @param readOnly the readOnly to set
 	 */
 	public void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;

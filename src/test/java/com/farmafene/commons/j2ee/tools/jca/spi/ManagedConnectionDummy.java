@@ -32,8 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.farmafene.commons.j2ee.tools.jca.common.StringPrintStream;
-import com.farmafene.commons.j2ee.tools.jca.spi.ManagedConnectionMetaDataSPI;
-import com.farmafene.commons.j2ee.tools.jca.spi.ManagedConnectionSPI;
 
 public class ManagedConnectionDummy extends ManagedConnectionSPI<IManagedDriverDummy, ConnectionRequestInfoDummy, ManagedConnectionMetaDataSPI>
 implements IManagedDriverDummy {

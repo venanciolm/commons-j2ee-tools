@@ -25,8 +25,6 @@ package com.farmafene.commons.j2ee.tools.jca.spi;
 
 import java.util.UUID;
 
-import com.farmafene.commons.j2ee.tools.jca.spi.ConnectionRequestInfoSPI;
-
 @SuppressWarnings("serial")
 public class ConnectionRequestInfoDummy extends ConnectionRequestInfoSPI {
 

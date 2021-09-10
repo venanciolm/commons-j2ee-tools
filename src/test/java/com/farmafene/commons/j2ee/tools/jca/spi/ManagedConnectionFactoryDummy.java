@@ -23,11 +23,6 @@
  */
 package com.farmafene.commons.j2ee.tools.jca.spi;
 
-import com.farmafene.commons.j2ee.tools.jca.spi.ConnectionFactorySPI;
-import com.farmafene.commons.j2ee.tools.jca.spi.ManagedConnectionFactorySPI;
-import com.farmafene.commons.j2ee.tools.jca.spi.ManagedConnectionMetaDataSPI;
-import com.farmafene.commons.j2ee.tools.jca.spi.ManagedConnectionSPI;
-
 @SuppressWarnings("serial")
 public class ManagedConnectionFactoryDummy
 		extends

@@ -23,8 +23,6 @@
  */
 package com.farmafene.commons.j2ee.tools.jca.spi;
 
-import com.farmafene.commons.j2ee.tools.jca.spi.ConnectionFactorySPI;
-
 @SuppressWarnings("serial")
 public class ConnectionFactoryDummy extends
 		ConnectionFactorySPI<IManagedDriverDummy> implements IConnectionFactoryDummy {
