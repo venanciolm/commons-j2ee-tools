@@ -76,6 +76,14 @@
 	</distributionManagement>
 	<repositories>
 		<repository>
+			<id>central</id>
+			<name>Maven Repository Switchboard</name>
+			<url>https://repo1.maven.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
 			<id>${FARMAFENE.repository.RELEASES.ID}</id>
 			<url>${FARMAFENE.repository.RELEASES}</url>
 			<releases>
@@ -201,34 +209,35 @@
 				<configuration>
 					<source>${jdk.version}</source>
 					<show>private</show>
+					<doclint>none</doclint>
+					<failOnError>false</failOnError>
 				</configuration>
-				<!-- <executions> -->
-				<!-- <execution> -->
-				<!-- <id>attach-javadoc</id> -->
-				<!-- <goals> -->
-				<!-- <goal>jar</goal> -->
-				<!-- </goals> -->
-				<!-- </execution> -->
-				<!-- </executions> -->
+				<executions>
+					<execution>
+						<id>attach-javadoc</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<configuration>
 					<outputDirectory>${basedir}/target</outputDirectory>
-					<finalName>${project.artifactId}-${project.version}</finalName>
 					<attach>true</attach>
 					<forceCreation>false</forceCreation>
 					<includePom>true</includePom>
 				</configuration>
-				<!-- <executions> -->
-				<!-- <execution> -->
-				<!-- <id>attach-sources</id> -->
-				<!-- <goals> -->
-				<!-- <goal>jar</goal> -->
-				<!-- </goals> -->
-				<!-- </execution> -->
-				<!-- </executions> -->
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
